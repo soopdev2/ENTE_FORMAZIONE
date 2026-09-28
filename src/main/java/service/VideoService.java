@@ -2,10 +2,15 @@ package service;
 
 import entity.Modulo;
 import entity.Video;
+import java.io.IOException;
+import java.nio.file.Path;
 import repositories.VideoRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.mp4parser.muxer.Movie;
+import org.mp4parser.muxer.Track;
+import org.mp4parser.muxer.container.mp4.MovieCreator;
 import repositories.ModuloRepository;
 
 /**
@@ -272,4 +277,68 @@ public class VideoService {
             );
         }
     }
+
+    public Long getDurataVideo(
+            Path file
+    ) throws IOException {
+
+        if (file == null) {
+
+            throw new IllegalArgumentException(
+                    "File video obbligatorio"
+            );
+        }
+
+        if (!java.nio.file.Files.exists(file)
+                || !java.nio.file.Files.isRegularFile(file)) {
+
+            throw new IllegalArgumentException(
+                    "File video non trovato"
+            );
+        }
+
+        Movie movie
+                = MovieCreator.build(
+                        file.toString()
+                );
+
+        double durataMassima
+                = 0;
+
+        for (Track track : movie.getTracks()) {
+
+            long durata
+                    = track.getDuration();
+
+            long timescale
+                    = track.getTrackMetaData()
+                            .getTimescale();
+
+            if (timescale <= 0) {
+                continue;
+            }
+
+            double durataSecondi
+                    = (double) durata
+                    / timescale;
+
+            if (durataSecondi > durataMassima) {
+
+                durataMassima
+                        = durataSecondi;
+            }
+        }
+
+        if (durataMassima <= 0) {
+
+            throw new IllegalArgumentException(
+                    "Impossibile determinare la durata del video"
+            );
+        }
+
+        return (long) Math.ceil(
+                durataMassima
+        );
+    }
+
 }

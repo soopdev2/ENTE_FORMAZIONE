@@ -60,7 +60,7 @@ public class LoginServlet extends HttpServlet {
                 int roleId = AuthenticationService.authenticate(username, password);
                 if (roleId != -1) {
                     User user = AuthenticationService.getUserByUsername(username);
-                    if (request.getContextPath().contains("ENM_2026_FAD_VIDEO")) {
+                    if (request.getContextPath().contains("ENTE_FORMAZIONE")) {
                         request.getSession().setAttribute("src", "../..");
                     }
 

@@ -1,9 +1,9 @@
-
 <%-- 
     Document   : navbar
     Author     : Aldo
 --%>
 
+<%@page import="entity.User"%>
 <%
 
     String dashboard_active = "";
@@ -21,61 +21,92 @@
                     uri1.lastIndexOf("/") + 1
             );
 
+
+    /*
+     * DASHBOARD
+     */
     if (pageName1.equals("dashboard.jsp")) {
 
         dashboard_active = "active";
+    }
 
-    } else if (pageName1.equals("lista.jsp")
-            || pageName1.equals("crea.jsp")
-            || pageName1.equals("modifica.jsp")
-            || pageName1.equals("dettaglio.jsp")
-            || pageName1.equals("utenti.jsp")) {
 
-        String path
-                = request.getRequestURI();
+    /*
+     * CORSI
+     */
+    if (uri1.contains("/corsi/")) {
 
-        if (path.contains("/corsi/")) {
+        corsi_active = "active";
+    }
 
-            corsi_active = "active";
-        }
 
-    } else if (pageName1.equals("modifica.jsp")
-            || pageName1.equals("dettaglio.jsp")) {
+    /*
+     * MODULI
+     */
+    if (uri1.contains("/moduli/")) {
 
-        String path
-                = request.getRequestURI();
+        moduli_active = "active";
+    }
 
-        if (path.contains("/moduli/")) {
 
-            moduli_active = "active";
-        }
+    /*
+     * VIDEO
+     */
+    if (uri1.contains("/video/")) {
 
-    } else if (pageName1.equals("modifica.jsp")
-            || pageName1.equals("dettaglio.jsp")
-            || pageName1.equals("statistiche.jsp")
-            || pageName1.equals("utenti.jsp")) {
+        video_active = "active";
+    }
 
-        String path
-                = request.getRequestURI();
 
-        if (path.contains("/video/")) {
-
-            video_active = "active";
-        }
-
-    } else if (pageName1.equals("statistiche.jsp")) {
+    /*
+     * STATISTICHE
+     */
+    if (pageName1.equals("statistiche.jsp")) {
 
         statistiche_active = "active";
+    }
 
-    } else if (pageName1.equals("utenti.jsp")) {
+
+    /*
+     * UTENTI
+     */
+    if (pageName1.equals("utenti.jsp")
+            && uri1.contains("/corsi/")) {
 
         utenti_active = "active";
     }
 
+
+    /*
+     * UTENTE LOGGATO
+     */
+    User utenteNavbar
+            = (User) session.getAttribute("user");
+
+    String nomeUtenteNavbar = "Utente";
+
+    if (utenteNavbar != null) {
+
+        if (utenteNavbar.getNome() != null
+                && !utenteNavbar.getNome().isBlank()) {
+
+            nomeUtenteNavbar
+                    = utenteNavbar.getNome();
+
+        } else if (utenteNavbar.getUsername() != null
+                && !utenteNavbar.getUsername().isBlank()) {
+
+            nomeUtenteNavbar
+                    = utenteNavbar.getUsername();
+        }
+    }
+
 %>
 
-
-
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
 
 <nav
     class="navbar navbar-expand-lg has-megamenu"
@@ -112,6 +143,19 @@
     </button>
 
 
+    <div style="position: relative; top:-180px; left: 1440px;" class="ms-lg-3">
+
+        <a style="height: 25px; width: 25px;"
+            href="<%=request.getContextPath()%>/LoginServlet?isLogin="
+            class="btn btn-outline-white"
+            title="Esci"
+            aria-label="Logout"
+            >
+            <i class="bi bi-box-arrow-right"></i>
+        </a>
+
+    </div>
+
     <div
         class="navbar-collapsable"
         id="navbar-E"
@@ -146,6 +190,8 @@
         </div>
 
 
+
+
         <div class="menu-wrapper justify-content-lg-between">
 
 
@@ -169,6 +215,10 @@
 
                 </li>
 
+
+                <!-- =================================================
+                     CORSI
+                ================================================== -->
 
                 <li class="nav-item dropdown megamenu">
 
@@ -280,6 +330,10 @@
                 </li>
 
 
+                <!-- =================================================
+                     MODULI
+                ================================================== -->
+
                 <li class="nav-item dropdown megamenu">
 
                     <button
@@ -390,6 +444,10 @@
                 </li>
 
 
+                <!-- =================================================
+                     VIDEO
+                ================================================== -->
+
                 <li class="nav-item dropdown megamenu">
 
                     <button
@@ -494,7 +552,7 @@
                                                                 class="icon icon-sm me-2"
                                                                 >
 
-                                                            <use href="../../Bootstrap2024/assets/svg/sprites.svg#it-chart"></use>
+                                                                <use href="../../Bootstrap2024/assets/svg/sprites.svg#it-chart"></use>
 
                                                             </svg>
 
@@ -508,7 +566,7 @@
 
                                             </div>
 
-                                        </div-->
+                                        </div>
 
                                     </div>
 
@@ -523,6 +581,8 @@
                 </li>
 
 
+
+
                 <!--li class="nav-item">
 
                     <a
@@ -535,6 +595,7 @@
                     </a>
 
                 </li-->
+
 
                 <!--li class="nav-item">
 
@@ -551,6 +612,14 @@
 
 
             </ul>
+
+
+
+
+
+
+
+
 
         </div>
 

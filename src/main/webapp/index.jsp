@@ -50,9 +50,125 @@
             });
         </script>
 
+        <style>
 
-        <script type="text/javascript"
-        src="assets/bootstrap/soop/js/jquery-3.7.1.js"></script>
+            /* =========================================================
+               ESTETICA LOGIN SPID + CIE
+               ========================================================= */
+
+            .spid-login-container {
+                padding: 30px !important;
+                border-radius: 14px !important;
+            }
+
+            /* Contenitore dei due pulsanti */
+            .spid-login-container > form {
+                margin-bottom: 0;
+            }
+
+            /* SPID */
+            .spid-login-container .button-spid {
+                width: 100% !important;
+                min-height: 58px;
+                margin-bottom: 0 !important;
+
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+
+                border-radius: 8px !important;
+
+                transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
+            }
+
+            .spid-login-container .button-spid:hover {
+                transform: translateY(-2px);
+
+                box-shadow:
+                    0 5px 14px rgba(0, 0, 0, 0.12);
+            }
+
+            /* Form CIE */
+            .spid-login-container > form:last-child {
+                height: 58px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Pulsante CIE */
+            .spid-login-container > form:last-child input[type="image"] {
+
+                width: 100%;
+                height: 58px;
+
+                object-fit: contain;
+
+                padding: 4px !important;
+
+                border-radius: 8px;
+
+                transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease;
+            }
+
+            .spid-login-container > form:last-child input[type="image"]:hover {
+
+                transform: translateY(-2px);
+
+                box-shadow:
+                    0 5px 14px rgba(0, 0, 0, 0.12);
+            }
+
+
+
+            @media (min-width: 576px) {
+
+                .spid-login-container {
+
+                    display: grid;
+
+                    grid-template-columns: 1fr 1fr;
+
+                    gap: 15px;
+
+                    align-items: center;
+                }
+
+                .spid-login-container > form:first-of-type {
+                    grid-column: 1;
+                }
+
+                .spid-login-container > form:last-child {
+                    grid-column: 2;
+                }
+            }
+
+
+            /* =========================================================
+               MOBILE
+               ========================================================= */
+
+            @media (max-width: 575px) {
+
+                .spid-login-container {
+                    display: block;
+                }
+
+                .spid-login-container > form:first-of-type {
+                    margin-bottom: 15px;
+                }
+            }
+
+        </style>
+
+
+
+        <script src="assets/bootstrap/soop/js/jquery-3.7.1.js"></script>
 
         <link rel="stylesheet"
               href="assets/bootstrap/assets/css/bootstrap.min.css"/>
@@ -86,7 +202,7 @@
         <link href="assets/bootstrap/vendors/custom/vendors/fontawesome5/css/all.min.css"
               rel="stylesheet"
               type="text/css" />
-        
+
         <link href="assets/css/global/global.css"
               rel="stylesheet"
               type="text/css" />
@@ -178,10 +294,10 @@
 
 
     <body class="d-flex flex-column min-vh-100">
-        
-        
+
+
         <%@include file="page/admin/Header.jsp" %>
-        
+
         <br>
 
 
@@ -339,7 +455,7 @@
                                 </a>
 
 
-                                
+
                                 <div id="spid-idp-button-medium-post"
                                      class="spid-idp-button spid-idp-button-tip spid-idp-button-relative">
 
@@ -380,8 +496,8 @@
             </div>
 
         </main>
-        
-        
+
+
         <%@include file="page/admin/footer.jsp" %>
 
 

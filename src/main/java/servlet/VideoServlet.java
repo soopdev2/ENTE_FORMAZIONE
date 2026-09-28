@@ -12,10 +12,28 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.Part;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+
 import java.io.IOException;
 import java.util.List;
 
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,
+        maxFileSize = 500L * 1024 * 1024,
+        maxRequestSize = 500L * 1024 * 1024
+)
+
 public class VideoServlet extends HttpServlet {
+
+    private static final String VIDEO_DIRECTORY
+            = "C:/ENTE_VIDEO/videos";
 
     private final VideoService videoService
             = new VideoService();
@@ -131,7 +149,7 @@ public class VideoServlet extends HttpServlet {
     private void createVideo(
             HttpServletRequest request,
             HttpServletResponse response)
-            throws IOException {
+            throws IOException, ServletException {
 
         Long moduloId
                 = parseLong(
@@ -145,20 +163,85 @@ public class VideoServlet extends HttpServlet {
         String descrizione
                 = request.getParameter("descrizione");
 
-        String filePath
-                = request.getParameter("filePath");
-
-        Long durataSecondi
-                = parseLong(
-                        request.getParameter("durataSecondi"),
-                        "Durata video obbligatoria"
-                );
-
         Integer ordine
                 = parseInteger(
                         request.getParameter("ordine"),
                         "Ordine obbligatorio"
                 );
+
+        Part videoPart
+                = request.getPart("video");
+
+        if (videoPart == null
+                || videoPart.getSize() <= 0) {
+
+            throw new IllegalArgumentException(
+                    "File video obbligatorio"
+            );
+        }
+
+        String contentType
+                = videoPart.getContentType();
+
+        if (contentType == null
+                || !contentType.startsWith("video/")) {
+
+            throw new IllegalArgumentException(
+                    "Il file selezionato non è un video"
+            );
+        }
+
+        String nomeOriginale
+                = Paths.get(
+                        videoPart.getSubmittedFileName()
+                )
+                        .getFileName()
+                        .toString();
+
+        String estensione = "";
+
+        int ultimoPunto
+                = nomeOriginale.lastIndexOf(".");
+
+        if (ultimoPunto > 0) {
+
+            estensione
+                    = nomeOriginale.substring(
+                            ultimoPunto
+                    );
+        }
+
+        String nomeFile
+                = UUID.randomUUID()
+                        .toString()
+                + estensione;
+
+        Path cartellaVideo
+                = Paths.get(
+                        VIDEO_DIRECTORY
+                );
+
+        Files.createDirectories(
+                cartellaVideo
+        );
+
+        Path fileDestinazione
+                = cartellaVideo.resolve(
+                        nomeFile
+                );
+
+        videoPart.write(
+                fileDestinazione.toString()
+        );
+
+        Long durataSecondi
+                = videoService.getDurataVideo(
+                        fileDestinazione
+                );
+
+        String filePath
+                = "/videos/"
+                + nomeFile;
 
         Video video
                 = videoService.creaVideo(
@@ -435,6 +518,7 @@ public class VideoServlet extends HttpServlet {
         }
     }
 
+   
 // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.

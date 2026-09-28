@@ -62,6 +62,18 @@
 
     </button>
 
+    <div style="position: relative; top:-180px; left: 1440px;" class="ms-lg-3">
+
+        <a style="height: 25px; width: 25px;"
+           href="<%=request.getContextPath()%>/LoginServlet?isLogin="
+           class="btn btn-outline-white"
+           title="Esci"
+           aria-label="Logout"
+           >
+            <i class="bi bi-box-arrow-right"></i>
+        </a>
+
+    </div>
 
     <div
         class="navbar-collapsable"

@@ -32,6 +32,10 @@
         <servlet-name>UserCorsoServlet</servlet-name>
         <servlet-class>servlet.UserCorsoServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>VideoFileServlet</servlet-name>
+        <servlet-class>servlet.VideoFileServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ModuloServlet</servlet-name>
         <url-pattern>/ModuloServlet</url-pattern>
@@ -63,6 +67,10 @@
     <servlet-mapping>
         <servlet-name>UserCorsoServlet</servlet-name>
         <url-pattern>/UserCorsoServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>VideoFileServlet</servlet-name>
+        <url-pattern>/VideoFileServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

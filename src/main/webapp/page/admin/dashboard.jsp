@@ -268,7 +268,7 @@
             </div>
 
 
-            <div class="card shadow-sm mt-5">
+            <!--div class="card shadow-sm mt-5">
 
                 <div class="card-body p-4">
 
@@ -306,7 +306,7 @@
 
                 </div>
 
-            </div>
+            </div-->
 
 
         </main>

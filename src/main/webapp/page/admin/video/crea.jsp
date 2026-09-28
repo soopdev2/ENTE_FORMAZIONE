@@ -79,7 +79,10 @@
 
 %>
 
-<!DOCTYPE html> <html lang="it">
+<!DOCTYPE html>
+
+<html lang="it">
+
     <head>
 
         <meta charset="UTF-8">
@@ -124,33 +127,47 @@
                         <div>
 
                             <h1 class="h3 mb-1">
+
                                 Nuovo video
+
                             </h1>
 
                             <p class="text-muted mb-0">
+
                                 Inserisci i dati del nuovo video.
+
                             </p>
 
                         </div>
 
+
                         <%                            String videoUrl;
 
-                            if (moduloId != null && !moduloId.trim().isEmpty()) {
+                            if (moduloId != null
+                                    && !moduloId.trim().isEmpty()) {
+
                                 videoUrl = request.getContextPath()
-                                        + "/VideoServlet?action=listByModulo&moduloId=" + moduloId;
+                                        + "/VideoServlet?action=listByModulo&moduloId="
+                                        + moduloId;
+
                             } else {
+
                                 videoUrl = request.getContextPath()
                                         + "/VideoServlet?action=list";
+
                             }
+
                         %>
 
-                        <a href="<%= videoUrl%>" class="btn btn-outline-secondary">
+
+                        <a
+                            href="<%= videoUrl%>"
+                            class="btn btn-outline-secondary"
+                            >
+
                             ← Torna ai video
+
                         </a>
-
-
-
-
 
 
                     </div>
@@ -167,6 +184,7 @@
                             <form
                                 action="<%= request.getContextPath()%>/VideoServlet"
                                 method="post"
+                                enctype="multipart/form-data"
                                 >
 
 
@@ -179,102 +197,193 @@
                                     >
 
 
-                                <!-- MODULO -->
+                                <!-- CORSO E MODULO -->
 
-                                <div class="mb-3">
-
-
-                                    <label
-                                        for="moduloId"
-                                        class="form-label"
-                                        >
-
-                                        Modulo
-
-                                    </label>
+                                <div class="row">
 
 
-                                    <select
-                                        class="form-select"
-                                        id="moduloId"
-                                        name="moduloId"
-                                        required
-                                        >
+                                    <!-- CORSO -->
+
+                                    <div class="col-md-6 mb-3">
 
 
-                                        <option value="">
-                                            -- Seleziona un modulo --
-                                        </option>
-
-
-                                        <%
-
-                                            if (moduli != null
-                                                    && !moduli.isEmpty()) {
-
-                                                for (Modulo modulo : moduli) {
-
-                                                    boolean selezionato
-                                                            = moduloId != null
-                                                            && moduloId.equals(
-                                                                    String.valueOf(
-                                                                            modulo.getId()
-                                                                    )
-                                                            );
-
-                                        %>
-
-
-                                        <option
-                                            value="<%= modulo.getId()%>"
-                                            <%= selezionato ? "selected" : ""%>
+                                        <label
+                                            for="corsoId"
+                                            class="form-label"
                                             >
 
-                                            <%= modulo.getTitolo()%>
+                                            Corso
 
-                                        </option>
+                                        </label>
 
 
-                                        <%
+                                        <select
+                                            class="form-select"
+                                            id="corsoId"
+                                            required
+                                            >
+
+                                            <option value="">
+
+                                                -- Seleziona un corso --
+
+                                            </option>
+
+
+                                            <%
+
+                                                java.util.Set<Long> corsiVisti
+                                                        = new java.util.HashSet<>();
+
+                                                if (moduli != null
+                                                        && !moduli.isEmpty()) {
+
+                                                    for (Modulo modulo : moduli) {
+
+                                                        if (modulo.getCorso() == null) {
+                                                            continue;
+                                                        }
+
+                                                        Long corsoId
+                                                                = modulo.getCorso().getId();
+
+                                                        if (corsiVisti.contains(corsoId)) {
+                                                            continue;
+                                                        }
+
+                                                        corsiVisti.add(corsoId);
+
+                                            %>
+
+
+                                            <option
+                                                value="<%= corsoId%>"
+                                                >
+
+                                                <%= modulo.getCorso().getTitolo()%>
+
+                                            </option>
+
+
+                                            <%
+
+                                                    }
 
                                                 }
 
-                                            }
-
-                                        %>
+                                            %>
 
 
-                                    </select>
+                                        </select>
 
-
-                                    <div class="form-text">
-
-                                        Se sei entrato dalla pagina di un modulo,
-                                        il modulo viene selezionato automaticamente.
 
                                     </div>
 
 
-                                    <%                                    if (moduli == null
-                                                || moduli.isEmpty()) {
+                                    <!-- MODULO -->
 
-                                    %>
+                                    <div class="col-md-6 mb-3">
 
 
-                                    <div class="alert alert-warning mt-3 mb-0">
+                                        <label
+                                            for="moduloId"
+                                            class="form-label"
+                                            >
 
-                                        Non sono presenti moduli disponibili.
-                                        Crea prima un modulo per poter inserire un video.
+                                            Modulo
+
+                                        </label>
+
+
+                                        <select
+                                            class="form-select"
+                                            id="moduloId"
+                                            name="moduloId"
+                                            required
+                                            disabled
+                                            >
+
+
+                                            <option value="">
+
+                                                -- Seleziona prima un corso --
+
+                                            </option>
+
+
+                                            <%                                                if (moduli != null
+                                                        && !moduli.isEmpty()) {
+
+                                                    for (Modulo modulo : moduli) {
+
+                                                        if (modulo.getCorso() == null) {
+                                                            continue;
+                                                        }
+
+                                            %>
+
+
+                                            <option
+                                                value="<%= modulo.getId()%>"
+                                                data-corso="<%= modulo.getCorso().getId()%>"
+                                                <%= moduloId != null
+                                                        && moduloId.equals(
+                                                                String.valueOf(
+                                                                        modulo.getId()
+                                                                )
+                                                        )
+                                                        ? "selected"
+                                                        : ""%>
+                                                >
+
+                                                <%= modulo.getTitolo()%>
+
+                                            </option>
+
+
+                                            <%
+
+                                                    }
+
+                                                }
+
+                                            %>
+
+
+                                        </select>
+
+
+                                        <div class="form-text">
+
+                                            Seleziona prima il corso per visualizzare
+                                            i relativi moduli.
+
+                                        </div>
+
 
                                     </div>
-
-
-                                    <%                                    }
-
-                                    %>
 
 
                                 </div>
+
+
+                                <%                                    if (moduli == null
+                                            || moduli.isEmpty()) {
+
+                                %>
+
+
+                                <div class="alert alert-warning mt-3 mb-0">
+
+                                    Non sono presenti moduli disponibili.
+                                    Crea prima un modulo per poter inserire un video.
+
+                                </div>
+
+
+                                <%                                    }
+
+                                %>
 
 
                                 <!-- TITOLO -->
@@ -332,34 +441,35 @@
                                 </div>
 
 
-                                <!-- FILE PATH -->
+                                <!-- FILE VIDEO -->
 
                                 <div class="mb-3">
 
 
                                     <label
-                                        for="filePath"
+                                        for="video"
                                         class="form-label"
                                         >
 
-                                        Percorso video
+                                        Video
 
                                     </label>
 
 
                                     <input
-                                        type="text"
+                                        type="file"
                                         class="form-control"
-                                        id="filePath"
-                                        name="filePath"
-                                        placeholder="es. /videos/formazione/video1.mp4"
+                                        id="video"
+                                        name="video"
+                                        accept="video/mp4"
                                         required
                                         >
 
 
                                     <div class="form-text">
 
-                                        Inserisci il percorso del file video.
+                                        Seleziona il file video dal PC.
+                                        La durata verrà rilevata automaticamente.
 
                                     </div>
 
@@ -367,37 +477,9 @@
                                 </div>
 
 
-                                <!-- DURATA E ORDINE -->
+                                <!-- ORDINE -->
 
                                 <div class="row">
-
-
-                                    <!-- DURATA -->
-
-                                    <div class="col-md-6 mb-3">
-
-
-                                        <label
-                                            for="durataSecondi"
-                                            class="form-label"
-                                            >
-
-                                            Durata (secondi)
-
-                                        </label>
-
-
-                                        <input
-                                            type="number"
-                                            class="form-control"
-                                            id="durataSecondi"
-                                            name="durataSecondi"
-                                            min="1"
-                                            required
-                                            >
-
-
-                                    </div>
 
 
                                     <!-- ORDINE -->
@@ -491,6 +573,101 @@
 
         <script
             src="../../../assets/bootstrap/assets/js/bootstrap-italia.bundle.min.js">
+        </script>
+
+
+        <script>
+
+            const corsoSelect =
+                    document.getElementById("corsoId");
+
+            const moduloSelect =
+                    document.getElementById("moduloId");
+
+
+            corsoSelect.addEventListener(
+                    "change",
+                    function () {
+
+                        const corsoId =
+                                this.value;
+
+
+                        moduloSelect.value = "";
+
+
+                        if (corsoId === "") {
+
+                            moduloSelect.disabled = true;
+
+                        } else {
+
+                            moduloSelect.disabled = false;
+
+                        }
+
+
+                        const moduli =
+                                moduloSelect.querySelectorAll(
+                                        "option[data-corso]"
+                                        );
+
+
+                        moduli.forEach(
+                                function (modulo) {
+
+                                    modulo.hidden =
+                                            modulo.dataset.corso
+                                            !== corsoId;
+
+                                }
+                        );
+
+                    }
+            );
+
+
+            const moduloSelezionato =
+                    moduloSelect.querySelector(
+                            "option[selected]"
+                            );
+
+
+            if (moduloSelezionato) {
+
+                const corsoId =
+                        moduloSelezionato.dataset.corso;
+
+
+                if (corsoId) {
+
+                    corsoSelect.value =
+                            corsoId;
+
+                    moduloSelect.disabled =
+                            false;
+
+
+                    const moduli =
+                            moduloSelect.querySelectorAll(
+                                    "option[data-corso]"
+                                    );
+
+
+                    moduli.forEach(
+                            function (modulo) {
+
+                                modulo.hidden =
+                                        modulo.dataset.corso
+                                        !== corsoId;
+
+                            }
+                    );
+
+                }
+
+            }
+
         </script>
 
 
