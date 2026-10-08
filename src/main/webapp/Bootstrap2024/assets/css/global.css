@@ -1,0 +1,175 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : 18 apr 2024, 16:40:05
+    Author     : Aldo
+*/
+
+*{
+    font-family: 'Titillium Web', sans-serif;
+}
+
+body{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+.it-header-slim-wrapper {
+    box-shadow: 0 1px 3px rgba(var(--bs-black-rgb), .15);
+}
+.profile-area-label {
+    letter-spacing: .5px;
+}
+.avatar.profile-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: .95rem;
+    background-color: var(--bs-white);
+    color: var(--bs-primary);
+    border: 2px solid rgba(var(--bs-white-rgb), .6);
+    transition: box-shadow .15s ease-in-out;
+}
+.avatar.profile-avatar-lg {
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
+}
+#userDropdown:hover .profile-avatar {
+    box-shadow: 0 0 0 .2rem rgba(var(--bs-white-rgb), .35);
+}
+.profile-dropdown-head {
+    background-color: var(--bs-primary);
+}
+.it-header-slim-wrapper .dropdown-menu {
+    margin-top: .5rem;
+    border-radius: .5rem;
+}
+.it-header-slim-wrapper .dropdown-item {
+    padding: .5rem 1rem;
+}
+.it-header-slim-wrapper .dropdown-item:hover,
+.it-header-slim-wrapper .dropdown-item:focus {
+    background-color: rgba(var(--bs-primary-rgb), .1);
+    color: var(--bs-primary);
+}
+.it-header-slim-wrapper .dropdown-item.text-danger:hover,
+.it-header-slim-wrapper .dropdown-item.text-danger:focus {
+    background-color: rgba(var(--bs-danger-rgb), .1);
+    color: var(--bs-danger);
+}
+
+/* Brand istituzionale */
+.it-brand-tagline {
+    font-size: .85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+.it-header-center-content-wrapper .icon {
+    fill: var(--bs-white);
+}
+
+/* Card */
+.card {
+    border: 0;
+    border-radius: .6rem;
+    box-shadow: 0 2px 10px rgba(var(--bs-dark-rgb), .08);
+}
+.card-header {
+    background-color: var(--bs-white);
+    border-bottom: 1px solid var(--bs-border-color);
+    border-top-left-radius: .6rem !important;
+    border-top-right-radius: .6rem !important;
+}
+
+/* Tabelle */
+.table thead th {
+    background-color: var(--bs-light);
+    color: var(--bs-dark);
+    border-bottom: 2px solid var(--bs-border-color);
+    vertical-align: middle;
+}
+.table-hover > tbody > tr:hover {
+    background-color: rgba(var(--bs-primary-rgb), .06);
+}
+
+/* Form */
+.form-label {
+    font-weight: 600;
+    color: var(--bs-dark);
+}
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 .2rem rgba(var(--bs-primary-rgb), .15);
+}
+
+/* Bottoni */
+.btn {
+    border-radius: .375rem;
+}
+.btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+/* ============================================================
+   DataTables (aspetto Bootstrap Italia)
+   ============================================================ */
+.table.dataTable {
+    --dt-row-selected: var(--bs-primary-rgb);
+    --dt-row-selected-text: var(--bs-white-rgb);
+    --dt-row-selected-link: var(--bs-black-rgb);
+    --dt-row-stripe: var(--bs-dark-rgb);
+    --dt-row-hover: var(--bs-primary-rgb);
+    --dt-column-ordering: var(--bs-dark-rgb);
+}
+.dataTables_wrapper {
+    padding: 0;
+}
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid var(--bs-border-color);
+    border-radius: .375rem;
+    padding: .375rem .5rem;
+    background-color: var(--bs-body-bg);
+}
+.dataTables_wrapper .dataTables_filter input {
+    margin-left: .5rem;
+}
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: .75rem;
+}
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: .75rem;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    border-radius: .375rem !important;
+    margin-left: .25rem;
+    border: 1px solid transparent !important;
+    color: var(--bs-primary) !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: var(--bs-primary) !important;
+    border-color: var(--bs-primary) !important;
+    color: var(--bs-white) !important;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+    color: var(--bs-secondary) !important;
+}
+.dataTables_wrapper .dataTables_info {
+    color: var(--bs-secondary);
+    padding-top: .75rem;
+}
+
