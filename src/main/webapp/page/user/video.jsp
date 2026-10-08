@@ -383,7 +383,11 @@
 
         <link
             rel="stylesheet"
-            href="<%= request.getContextPath()%>/assets/bootstrap/assets/css/bootstrap.min.css"
+            href="../../Bootstrap2024/assets/css/bootstrap-italia.min.css"
+            >
+        <link
+            rel="stylesheet"
+            href="../../Bootstrap2024/assets/css/global.css"
             >
 
 
@@ -455,6 +459,8 @@
 
         <!-- NAVBAR -->
 
+        <%@ include file="../../page/user/headU.jsp" %>
+        <%@ include file="../../Bootstrap2024/index/index_SoggettoAttuatore/Header_soggettoAttuatore.jsp"%>
         <jsp:include page="/page/user/navbar.jsp" />
 
 

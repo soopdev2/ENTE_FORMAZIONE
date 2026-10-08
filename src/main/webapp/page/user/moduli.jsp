@@ -178,16 +178,16 @@
 
     <head>
 
- <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta content="width=device-width, initial-scale=1" name="viewport" />
         <meta content="" name="description" />
         <meta content="" name="author" />
 
         <!-- BOOTSTRAP COMUNI E FONT TITILLIUM WEB -->
-        <link rel="stylesheet" href="Bootstrap2024/assets/css/bootstrap-italia.min.css"/>
-        <link rel="stylesheet" href="Bootstrap2024/assets/css/global.css"/>
+        <link rel="stylesheet" href="../../Bootstrap2024/assets/css/bootstrap-italia.min.css"/>
+        <link rel="stylesheet" href="../../Bootstrap2024/assets/css/global.css"/>
         <link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet'>
-   
+
 
 
         <title>
@@ -203,7 +203,8 @@
 
         <!-- NAVBAR -->
 
-        <%@ include file="../admin/Header.jsp" %>
+        <%@ include file="../../page/user/headU.jsp" %>
+        <%@ include file="../../Bootstrap2024/index/index_SoggettoAttuatore/Header_soggettoAttuatore.jsp"%>
         <%@ include file="navbar.jsp" %>
 
 

@@ -223,8 +223,8 @@
         <meta content="" name="author" />
 
         <!-- BOOTSTRAP COMUNI E FONT TITILLIUM WEB -->
-        <link rel="stylesheet" href="Bootstrap2024/assets/css/bootstrap-italia.min.css"/>
-        <link rel="stylesheet" href="Bootstrap2024/assets/css/global.css"/>
+        <link rel="stylesheet" href="../../Bootstrap2024/assets/css/bootstrap-italia.min.css"/>
+        <link rel="stylesheet" href="../../Bootstrap2024/assets/css/global.css"/>
         <link href='https://fonts.googleapis.com/css?family=Titillium+Web' rel='stylesheet'>
 
         <title>
@@ -239,7 +239,8 @@
 
         <!-- NAVBAR -->
 
-        <%@ include file="../admin/Header.jsp" %>
+        <%@ include file="../../page/user/headU.jsp" %>
+        <%@ include file="../../Bootstrap2024/index/index_SoggettoAttuatore/Header_soggettoAttuatore.jsp" %>
         <%@ include file="navbar.jsp" %>
 
 
@@ -660,7 +661,7 @@
 
                                     <a
                                         href="<%= request.getContextPath()%>/page/user/video.jsp?videoId=<%= v.getId()%>"
-                                        class="btn btn-warning"
+                                        class="btn btn-outline-warning"
                                         >
 
                                         Continua

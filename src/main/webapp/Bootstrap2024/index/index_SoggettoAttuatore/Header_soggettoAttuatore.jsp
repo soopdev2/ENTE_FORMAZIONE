@@ -4,7 +4,6 @@
     NOTA: non contiene piu' <html>/<head>/<body> (era un errore di annidamento).
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <div class="it-header-wrapper">
     <div class="it-header-center-wrapper">
         <div class="container">
