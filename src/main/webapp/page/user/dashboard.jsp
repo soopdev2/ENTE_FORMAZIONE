@@ -104,7 +104,7 @@
         <!-- NAVBAR -->
 
         <%@ include file="../../page/user/headU.jsp" %>
-        <%@ include file="../../../Bootstrap2024/index/index_SoggettoAttuatore/Header_soggettoAttuatore.jsp"%>
+        <%@ include file="../../Bootstrap2024/index/index_SoggettoAttuatore/Header_soggettoAttuatore.jsp"%>
 
         <%@ include file="../user/navbar.jsp" %>
 
@@ -432,10 +432,10 @@
 
         <!-- Bootstrap JS -->
 
+        
         <script
-            src="<%= request.getContextPath()%>/assets/bootstrap/assets/js/bootstrap-italia.bundle.min.js"
-        ></script>
-
+            src="../../Bootstrap2024/assets/js/bootstrap-italia.bundle.min.js">
+        </script>
 
     </body>
 

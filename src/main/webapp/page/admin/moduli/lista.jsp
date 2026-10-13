@@ -402,8 +402,9 @@
 
 
 
+       
         <script
-            src="<%= request.getContextPath()%>/assets/bootstrap/assets/js/bootstrap-italia.bundle.min.js">
+            src="../../../Bootstrap2024/assets/js/bootstrap-italia.bundle.min.js">
         </script>
 
     </body>

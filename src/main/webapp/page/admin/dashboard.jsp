@@ -281,7 +281,7 @@
 
 
         <script
-            src="../../assets/bootstrap/assets/js/bootstrap.bundle.min.js">
+            src="../../Bootstrap2024/assets/js/bootstrap.bundle.min.js">
         </script>
 
     </body>

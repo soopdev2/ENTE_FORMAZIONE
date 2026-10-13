@@ -394,8 +394,10 @@
         </div>           
 
 
-        <script src="../../../assets/bootstrap/assets/js/bootstrap-italia.bundle.min.js"></script>
 
+        <script
+            src="../../../Bootstrap2024/assets/js/bootstrap-italia.bundle.min.js">
+        </script>
     </body>
 
 </html>
