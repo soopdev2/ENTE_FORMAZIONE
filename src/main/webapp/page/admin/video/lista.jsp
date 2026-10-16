@@ -432,11 +432,11 @@
 
                                             <!-- DETTAGLIO -->
 
-                                            <a
-                                                href="<%= request.getContextPath()%>/page/admin/video/dettaglio.jsp?id=<%= v.getId()%>"
-                                                class="btn btn-xs btn-outline-primary"
+                                            <a 
+                                                 href="<%= request.getContextPath()%>/page/admin/video/dettaglio.jsp?id=<%= v.getId()%>"
+                                                class=  "btn btn-xs btn-outline-primary" 
                                                 >
-                                                <svg class="icon icon-xs icon-primary text-uppercase" aria-hidden="true"><use href="../../../Bootstrap2024/assets/svg/sprites.svg#it-burger"></use></svg>
+                                                <svg class="icon icon-xs icon-primary text-uppercase"  aria-hidden="true"><use href="../../../Bootstrap2024/assets/svg/sprites.svg#it-burger"></use></svg>
                                             </a>
 
 

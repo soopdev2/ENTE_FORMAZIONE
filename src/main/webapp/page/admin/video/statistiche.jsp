@@ -152,7 +152,8 @@
 
     <body>
 
-        <%@ include file="../Header.jsp" %>
+        <%@ include file="../menu/head.jsp" %>
+        <%@ include file="../../../Bootstrap2024/index/index_SoggettoAttuatore/Header_soggettoAttuatore.jsp"%>
         <%@ include file="../navbar.jsp" %>
 
         <main class="container py-5 flex-grow-1">
