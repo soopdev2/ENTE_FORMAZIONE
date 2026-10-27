@@ -436,24 +436,34 @@ public class Utils {
                             java.nio.charset.StandardCharsets.UTF_8
                     );
 
-            String content = "<html>\n"
-                    + "                  <body>\n"
-                    + "                    <h2>Recupero password</h2>\n"
-                    + "                    <p>Hai richiesto di reimpostare la password del tuo account.</p>\n"
-                    + "                    <p>\n"
-                    + "                      <a href=\"%s\">Clicca qui per scegliere una nuova password</a>\n"
-                    + "                    </p>\n"
-                    + "                    <p>Il collegamento scade dopo 30 minuti.</p>\n"
-                    + "                    <p>Se non hai richiesto il recupero, ignora questa email.</p>\n"
-                    + "                  </body>\n"
-                    + "                </html>".formatted(linkRecupero);
+            String content = "<!DOCTYPE html>"
+                    + "<html><body>"
+                    + "<h2>Recupero password</h2>"
+                    + "<p>Hai richiesto di reimpostare la password del tuo account.</p>"
+                    + "<p>Per scegliere una nuova password, clicca sul pulsante seguente:</p>"
+                    + "<p>"
+                    + "<a href=\"" + linkRecupero + "\" "
+                    + "style=\"display:inline-block;padding:12px 20px;"
+                    + "background-color:#2563eb;color:#ffffff;"
+                    + "text-decoration:none;border-radius:6px;\">"
+                    + "Reimposta password</a>"
+                    + "</p>"
+                    + "<p>Se il pulsante non funziona, copia questo indirizzo nel browser:</p>"
+                    + "<p><a href=\"" + linkRecupero + "\">"
+                    + linkRecupero + "</a></p>"
+                    + "<p>Il collegamento scade dopo 30 minuti.</p>"
+                    + "<p>Se non hai richiesto il recupero, ignora questa email.</p>"
+                    + "</body></html>";
+
+            System.out.println("LINK RECUPERO: " + linkRecupero);
+            System.out.println("HTML EMAIL: " + content);
 
             MailjetRequest request1 = new MailjetRequest(Emailv31.resource)
                     .property(Emailv31.MESSAGES, new JSONArray()
                             .put(new JSONObject()
                                     .put(Emailv31.Message.FROM, new JSONObject()
                                             .put("Email", username)
-                                            .put("Name", "SmartNova")
+                                            .put("Name", "ENTE FORMAZIONE")
                                     )
                                     .put(Emailv31.Message.TO, new JSONArray()
                                             .put(new JSONObject()
@@ -597,7 +607,7 @@ public class Utils {
                     .replace(">", "&gt;");
 
             String contenuto = "<html><body>"
-                    + "<h2>Benvenuto su FAD VIDEO, " + nomeSicuro + "!</h2>"
+                    + "<h2>Benvenuto su ENTE FORMAZIONE, " + nomeSicuro + "!</h2>"
                     + "<p>Il tuo account è stato creato.</p>"
                     + "<p><strong>Nome utente:</strong> " + usernameSicuro + "</p>"
                     + "<p><strong>Password temporanea:</strong> "
@@ -612,13 +622,13 @@ public class Utils {
                             .put(new JSONObject()
                                     .put(Emailv31.Message.FROM, new JSONObject()
                                             .put("Email", mittente)
-                                            .put("Name", "FAD VIDEO"))
+                                            .put("Name", "ENTE FORMAZIONE"))
                                     .put(Emailv31.Message.TO, new JSONArray()
                                             .put(new JSONObject()
                                                     .put("Email", email)
                                                     .put("Name", nomeSicuro)))
                                     .put(Emailv31.Message.SUBJECT,
-                                            "Le tue credenziali FAD VIDEO")
+                                            "Le tue credenziali ENTE FORMAZIONE")
                                     .put(Emailv31.Message.HTMLPART, contenuto)));
 
             MailjetResponse risposta = client.post(richiesta);

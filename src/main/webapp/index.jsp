@@ -304,7 +304,7 @@
                                         <div class="d-flex justify-content-end mb-3">
 
 
-                                            <a href="recuperoPassword.jsp"
+                                            <a href="indexRecupero/recuperoPassword.jsp"
                                                class="it-link text-uppercase" style="font-size: 13px">
                                                 Password dimenticata?
                                             </a>
@@ -312,7 +312,7 @@
 
                                         <div class="d-flex justify-content-end mb-3">
 
-                                            <a href="registrazione.jsp"
+                                            <a href="indexRecupero/registrazione.jsp"
                                                class="it-link text-uppercase"
                                                style="font-size: 13px">
                                                 Crea un account

@@ -14,11 +14,11 @@
         <title>Reimposta password - FAD VIDEO</title>
 
         <link rel="stylesheet"
-              href="Bootstrap2024/assets/css/bootstrap-italia.min.css">
+              href="../Bootstrap2024/assets/css/bootstrap-italia.min.css">
         <link rel="stylesheet"
-              href="Bootstrap2024/assets/css/global.css">
+              href="../Bootstrap2024/assets/css/global.css">
         <link rel="stylesheet"
-              href="Bootstrap2024/assets/css/ita.min.css">
+              href="../Bootstrap2024/assets/css/ita.min.css">
         <link href="https://fonts.googleapis.com/css?family=Titillium+Web"
               rel="stylesheet">
 
@@ -88,8 +88,8 @@
     <body class="d-flex flex-column min-vh-100">
 
 
-        <%@include file="Bootstrap2024/index/login/menu_login.jsp" %>
-        <%@include file="Bootstrap2024/index/login/Header_login.jsp" %>
+        <%@include file="../Bootstrap2024/index/login/menu_login.jsp" %>
+        <%@include file="../Bootstrap2024/index/login/Header_login.jsp" %>
 
 
         <hr style="color: white">
@@ -164,7 +164,7 @@
                             </div>
 
                             <% if (!"successo".equals(esito)) {%>
-                            <form action="LoginServlet"
+                            <form action="<%= request.getContextPath()%>/LoginServlet"
                                   method="POST"
                                   onsubmit="return validaForm();">
 
@@ -232,11 +232,11 @@
         </main>
 
         <div class="it-footer">          
-            <%@include file="page/admin/footer.jsp" %>
+            <%@include file="../page/admin/footer.jsp" %>
         </div>
 
 
-        <script src="Bootstrap2024/assets/js/bootstrap-italia.bundle.min.js"
+        <script src="../Bootstrap2024/assets/js/bootstrap-italia.bundle.min.js"
         type="text/javascript"></script>
 
         <script>

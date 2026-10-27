@@ -111,7 +111,7 @@ public class LoginServlet extends HttpServlet {
                             if (user.isCambioPasswordObbligatorio()) {
                                 response.sendRedirect(
                                         request.getContextPath()
-                                        + "/cambioCredenziali.jsp"
+                                        + "/indexRecupero/cambioCredenziali.jsp"
                                 );
                                 return;
                             }
