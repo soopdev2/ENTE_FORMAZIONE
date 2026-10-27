@@ -341,6 +341,46 @@
                                 </div>
 
 
+                                <!-- DATA INIZIO -->
+
+                                <div class="mb-3">
+                                    <label for="dataInizio" class="form-label fw-semibold text-uppercase">
+                                        Data inizio validità
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        class="form-control"
+                                        id="dataInizio"
+                                        name="dataInizio"
+                                        value="<%= corso.getDataInizio() != null
+                                                ? corso.getDataInizio().toString()
+                                                : ""%>"
+                                        required
+                                        >
+                                </div>
+
+                                <!-- DATA FINE -->
+
+                                <div class="mb-3">
+                                    <label for="dataFine" class="form-label fw-semibold text-uppercase">
+                                        Data fine validità
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        class="form-control"
+                                        id="dataFine"
+                                        name="dataFine"
+                                        value="<%= corso.getDataFine() != null
+                                                ? corso.getDataFine().toString()
+                                                : ""%>"
+                                        required
+                                        >
+                                </div>
+
+
+
                                 <!-- AZIONI -->
 
                                 <div class="d-flex justify-content-end gap-2 mt-4">
@@ -383,10 +423,32 @@
 
 
 
-        
+
         <script
             src="../../../Bootstrap2024/assets/js/bootstrap-italia.bundle.min.js">
         </script>
+
+
+        <script>
+            const dataInizio = document.getElementById("dataInizio");
+            const dataFine = document.getElementById("dataFine");
+
+            function controllaDate() {
+                dataFine.setCustomValidity("");
+
+                if (dataInizio.value && dataFine.value) {
+                    if (dataFine.value < dataInizio.value) {
+                        dataFine.setCustomValidity(
+                                "La data di fine non può precedere quella di inizio."
+                                );
+                    }
+                }
+            }
+
+            dataInizio.addEventListener("change", controllaDate);
+            dataFine.addEventListener("change", controllaDate);
+        </script>
+
 
     </body>
 

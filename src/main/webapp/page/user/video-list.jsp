@@ -1,3 +1,4 @@
+<%@page import="java.time.LocalDate"%>
 <%@page import="Utility.Utils"%>
 <%@page import="entity.User"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -76,7 +77,7 @@
                     utente.getRuolo().getId()
             );
 
-     if (!Utils.isVisible(
+    if (!Utils.isVisible(
             ruolo,
             request.getRequestURI().substring(
                     request.getContextPath().length()
@@ -161,6 +162,23 @@
         response.sendError(
                 HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
                 "Il modulo non è associato ad alcun corso"
+        );
+
+        return;
+    }
+
+    // CONTROLLO VALIDITÀ CORSO
+    LocalDate oggi = LocalDate.now();
+
+    if (!Boolean.TRUE.equals(corso.getAttivo())
+            || corso.getDataInizio() == null
+            || corso.getDataFine() == null
+            || oggi.isBefore(corso.getDataInizio())
+            || oggi.isAfter(corso.getDataFine())) {
+
+        response.sendError(
+                HttpServletResponse.SC_FORBIDDEN,
+                "Il corso non è attualmente disponibile."
         );
 
         return;
@@ -714,11 +732,11 @@
 
         </main>
 
-                <%@include file="../admin/footer.jsp" %>
+        <%@include file="../admin/footer.jsp" %>
 
         <!-- Bootstrap JS -->
 
-       
+
         <script
             src="../../Bootstrap2024/assets/js/bootstrap-italia.bundle.min.js">
         </script>

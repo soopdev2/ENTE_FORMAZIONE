@@ -253,7 +253,7 @@ public class Spid extends HttpServlet {
 
             resp.sendRedirect(
                     req.getContextPath()
-                    + "/login.jsp");
+                    + "/index.jsp");
 
             return;
         }
@@ -265,7 +265,7 @@ public class Spid extends HttpServlet {
 
             resp.sendRedirect(
                     req.getContextPath()
-                    + "/login.jsp");
+                    + "/index.jsp");
 
             return;
         }

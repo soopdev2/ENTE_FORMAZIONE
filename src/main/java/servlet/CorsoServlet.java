@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import service.CorsoService;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 public class CorsoServlet extends HttpServlet {
 
@@ -113,15 +115,30 @@ public class CorsoServlet extends HttpServlet {
             HttpServletResponse response
     ) throws IOException {
 
-        String titolo
-                = request.getParameter("titolo");
+        String titolo = request.getParameter("titolo");
+        String descrizione = request.getParameter("descrizione");
 
-        String descrizione
-                = request.getParameter("descrizione");
+        LocalDate dataInizio = parseLocalDate(
+                request.getParameter("dataInizio"),
+                "Data di inizio obbligatoria o non valida"
+        );
+
+        LocalDate dataFine = parseLocalDate(
+                request.getParameter("dataFine"),
+                "Data di fine obbligatoria o non valida"
+        );
+
+        if (dataFine.isBefore(dataInizio)) {
+            throw new IllegalArgumentException(
+                    "La data di fine non può precedere la data di inizio."
+            );
+        }
 
         corsoService.creaCorso(
                 titolo,
-                descrizione
+                descrizione,
+                dataInizio,
+                dataFine
         );
 
         response.sendRedirect(
@@ -140,16 +157,31 @@ public class CorsoServlet extends HttpServlet {
                 "ID corso obbligatorio"
         );
 
-        String titolo
-                = request.getParameter("titolo");
+        String titolo = request.getParameter("titolo");
+        String descrizione = request.getParameter("descrizione");
 
-        String descrizione
-                = request.getParameter("descrizione");
+        LocalDate dataInizio = parseLocalDate(
+                request.getParameter("dataInizio"),
+                "Data di inizio obbligatoria o non valida"
+        );
+
+        LocalDate dataFine = parseLocalDate(
+                request.getParameter("dataFine"),
+                "Data di fine obbligatoria o non valida"
+        );
+
+        if (dataFine.isBefore(dataInizio)) {
+            throw new IllegalArgumentException(
+                    "La data di fine non può precedere la data di inizio."
+            );
+        }
 
         corsoService.aggiornaCorso(
                 id,
                 titolo,
-                descrizione
+                descrizione,
+                dataInizio,
+                dataFine
         );
 
         response.sendRedirect(
@@ -221,6 +253,23 @@ public class CorsoServlet extends HttpServlet {
             throw new IllegalArgumentException(
                     "Valore numerico non valido"
             );
+        }
+    }
+
+    private LocalDate parseLocalDate(
+            String value,
+            String message
+    ) {
+
+        if (value == null || value.trim().isEmpty()) {
+            throw new IllegalArgumentException(message);
+        }
+
+        try {
+            return LocalDate.parse(value.trim());
+
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException(message);
         }
     }
 

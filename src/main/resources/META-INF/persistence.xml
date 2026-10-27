@@ -15,6 +15,7 @@
     <class>entity.Corso</class>
     <class>entity.UserCorso</class>
     <class>repositories.UserCorsoRepository</class>
+    <class>entity.Email</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <!-- DATABASE -->

@@ -107,6 +107,14 @@
             <version>0.2.5</version>
             <type>jar</type>
         </dependency>
+        
+        <dependency>
+            <groupId>com.mailjet</groupId>
+            <artifactId>mailjet-client</artifactId>
+            <version>5.2.5</version>
+        </dependency>
+        
+        
     </dependencies>
     
     <build>

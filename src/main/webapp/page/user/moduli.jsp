@@ -1,3 +1,4 @@
+<%@page import="java.time.LocalDate"%>
 <%@page import="Utility.Utils"%>
 <%@page import="entity.User"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -160,6 +161,21 @@
                 "Corso non trovato."
         );
 
+        return;
+    }
+
+    LocalDate oggi = LocalDate.now();
+
+    if (!Boolean.TRUE.equals(corso.getAttivo())
+            || corso.getDataInizio() == null
+            || corso.getDataFine() == null
+            || oggi.isBefore(corso.getDataInizio())
+            || oggi.isAfter(corso.getDataFine())) {
+
+        response.sendError(
+                HttpServletResponse.SC_FORBIDDEN,
+                "Il corso non è attualmente disponibile."
+        );
         return;
     }
 

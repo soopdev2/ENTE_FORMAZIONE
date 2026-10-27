@@ -1,6 +1,7 @@
 package service;
 
 import entity.Corso;
+import java.time.LocalDate;
 import repositories.CorsoRepository;
 
 import java.util.List;
@@ -15,9 +16,15 @@ public class CorsoService {
                 = new CorsoRepository();
     }
 
-    public Long creaCorso(
+    public List<Corso> getCorsiValidi() {
+        return corsoRepository.findValidi();
+    }
+
+    public void creaCorso(
             String titolo,
-            String descrizione
+            String descrizione,
+            LocalDate dataInizio,
+            LocalDate dataFine
     ) {
 
         if (titolo == null
@@ -42,9 +49,17 @@ public class CorsoService {
 
         corso.setAttivo(true);
 
+        corso.setDataInizio(dataInizio);
+        corso.setDataFine(dataFine);
+
+        if (!corso.hasValidDateRange()) {
+            throw new IllegalArgumentException(
+                    "Il periodo di validità del corso non è valido."
+            );
+        }
+
         corsoRepository.save(corso);
 
-        return corso.getId();
     }
 
     public Corso getCorso(Long id) {
@@ -72,43 +87,47 @@ public class CorsoService {
     public void aggiornaCorso(
             Long id,
             String titolo,
-            String descrizione
+            String descrizione,
+            LocalDate dataInizio,
+            LocalDate dataFine
     ) {
 
         if (id == null) {
-
             throw new IllegalArgumentException(
                     "ID corso obbligatorio"
             );
         }
 
-        if (titolo == null
-                || titolo.trim().isEmpty()) {
-
+        if (titolo == null || titolo.trim().isEmpty()) {
             throw new IllegalArgumentException(
                     "Il titolo del corso è obbligatorio"
             );
         }
 
-        Corso corso
-                = corsoRepository.findById(id);
+        Corso corso = corsoRepository.findById(id);
 
         if (corso == null) {
-
             throw new IllegalArgumentException(
                     "Corso non trovato"
             );
         }
 
-        corso.setTitolo(
-                titolo.trim()
-        );
+        corso.setTitolo(titolo.trim());
 
         corso.setDescrizione(
                 descrizione != null
                         ? descrizione.trim()
                         : null
         );
+
+        corso.setDataInizio(dataInizio);
+        corso.setDataFine(dataFine);
+
+        if (!corso.hasValidDateRange()) {
+            throw new IllegalArgumentException(
+                    "Il periodo di validità del corso non è valido."
+            );
+        }
 
         corsoRepository.update(corso);
     }

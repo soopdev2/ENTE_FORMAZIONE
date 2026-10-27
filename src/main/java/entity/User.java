@@ -12,6 +12,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.Date;
+import jakarta.persistence.Column;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 /**
  *
@@ -33,13 +36,12 @@ public class User implements Serializable {
     private String nome;
 
     private String cognome;
-    
+
     private String cf;
 
     @ManyToOne
     private Ruolo ruolo;
 
-    
     public Ruolo getRuolo() {
         return ruolo;
     }
@@ -51,8 +53,18 @@ public class User implements Serializable {
     private String username;
 
     private String telefono;
-    
+
     private Date resetPasswordDate;
+
+    @Column(name = "reset_password_token", length = 64)
+    private String resetPasswordToken;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "reset_password_expiry")
+    private Date resetPasswordExpiry;
+    
+     @Column(name = "cambio_password_obbligatorio", nullable = false)
+    private boolean  cambioPasswordObbligatorio;
 
     @Override
     public int hashCode() {
@@ -119,8 +131,6 @@ public class User implements Serializable {
         this.cognome = cognome;
     }
 
-   
-
     public String getUsername() {
         return username;
     }
@@ -137,8 +147,6 @@ public class User implements Serializable {
         this.telefono = telefono;
     }
 
-    
-
     public Date getResetPasswordDate() {
         return resetPasswordDate;
     }
@@ -154,10 +162,30 @@ public class User implements Serializable {
     public void setCf(String cf) {
         this.cf = cf;
     }
-    
-    
-    
-    
+
+    public String getResetPasswordToken() {
+        return resetPasswordToken;
+    }
+
+    public void setResetPasswordToken(String resetPasswordToken) {
+        this.resetPasswordToken = resetPasswordToken;
+    }
+
+    public Date getResetPasswordExpiry() {
+        return resetPasswordExpiry;
+    }
+
+    public void setResetPasswordExpiry(Date resetPasswordExpiry) {
+        this.resetPasswordExpiry = resetPasswordExpiry;
+    }
+
+    public boolean isCambioPasswordObbligatorio() {
+        return cambioPasswordObbligatorio;
+    }
+
+    public void setCambioPasswordObbligatorio(boolean cambioPasswordObbligatorio) {
+        this.cambioPasswordObbligatorio = cambioPasswordObbligatorio;
+    }
     
     
 

@@ -4,6 +4,7 @@
  */
 package Utility;
 
+import entity.Corso;
 import entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -30,8 +31,8 @@ public class JpaUtil {
     public static void CallDb() {
 
         EntityManager em = JpaUtil.getEntityManager();
-        User user = em.find(User.class, 1L);
-        System.out.println("utente " + user.getId());
+        Corso corso = em.find(Corso.class, 1L);
+        System.out.println("utente " + corso.getId());
 
     }
 }

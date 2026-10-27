@@ -13,6 +13,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Date;
+import java.util.HexFormat;
 
 /**
  *
@@ -29,23 +35,45 @@ public class LoginServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    protected void processRequest(
+            HttpServletRequest request,
+            HttpServletResponse response)
             throws ServletException, IOException {
 
-        String isLogin = request.getParameter("isLogin");
+        String azione = request.getParameter("azione");
 
         try {
-            if (isLogin.equals("true")) {
+            if ("registrazione".equals(azione)) {
+                Registrazione(request, response);
+                return;
+            }
+
+            if ("cambiaCredenziali".equals(azione)) {
+                CambiaCredenziali(request, response);
+                return;
+            }
+
+            if ("recuperoPassword".equals(azione)) {
+                RecuperoPassword(request, response);
+                return;
+            }
+
+            if ("reimpostaPassword".equals(azione)) {
+                ReimpostaPassword(request, response);
+                return;
+            }
+
+            String isLogin = request.getParameter("isLogin");
+
+            if ("true".equals(isLogin)) {
                 Login(request, response);
             } else {
                 Logout(request, response);
             }
 
         } catch (ServletException | IOException e) {
-            e.printStackTrace();
-            //logfile.severe(estraiEccezione(e));
+            throw e;
         }
-
     }
 
     // LOGIN
@@ -74,6 +102,19 @@ public class LoginServlet extends HttpServlet {
                             session.setAttribute("username", Utils.sanitize(user.getUsername()));
                             session.setAttribute("nome", Utils.sanitize(user.getNome()));
                             session.setAttribute("user", user);
+
+                            session.setAttribute(
+                                    "cambioPasswordObbligatorio",
+                                    user.isCambioPasswordObbligatorio()
+                            );
+
+                            if (user.isCambioPasswordObbligatorio()) {
+                                response.sendRedirect(
+                                        request.getContextPath()
+                                        + "/cambioCredenziali.jsp"
+                                );
+                                return;
+                            }
 
                             redirectToPageByRole(response, request, userId, roleId);
 
@@ -158,21 +199,403 @@ public class LoginServlet extends HttpServlet {
     }
 
     // LOGOUT
-    protected void Logout(HttpServletRequest request, HttpServletResponse response)
+    protected void Logout(
+            HttpServletRequest request,
+            HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null) {
+            response.sendRedirect(
+                    request.getContextPath() + "/index.jsp?esito=OK&codice=001"
+            );
+            return;
+        }
+
+        session.invalidate();
+
+        response.sendRedirect(
+                request.getContextPath() + "/index.jsp?esito=OK&codice=001"
+        );
+    }
+
+    // RECUPERO PASSWORD
+    protected void RecuperoPassword(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        request.setCharacterEncoding("UTF-8");
+
+        String email = request.getParameter("email");
+
+        String paginaRecupero = request.getContextPath()
+                + "/indexRecupero/recuperoPassword.jsp";
+
+        if (email == null || email.isBlank()
+                || email.length() > 254
+                || !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+
+            response.sendRedirect(paginaRecupero + "?esito=errore");
+            return;
+        }
+
+        email = email.trim();
+
         try {
-            HttpSession session = request.getSession();
-            String userId = session.getAttribute("userId").toString();
-            User User_session = Utils.findUserById(Long.valueOf(userId));
-            session.invalidate();
+            User user = AuthenticationService.getUserByEmail(email);
 
-            response.sendRedirect("index.jsp?esito=OK&codice=001");
+            if (user != null) {
 
-        } catch (IOException | NumberFormatException e) {
+                byte[] randomBytes = new byte[32];
+                new SecureRandom().nextBytes(randomBytes);
 
-            //logfile.severe(Utility.estraiEccezione(e));
-            e.printStackTrace();
+                String token = HexFormat.of().formatHex(randomBytes);
+
+                String tokenHash = HexFormat.of().formatHex(
+                        MessageDigest.getInstance("SHA-256")
+                                .digest(token.getBytes(StandardCharsets.UTF_8))
+                );
+
+                Date scadenza = new Date(
+                        System.currentTimeMillis() + 30L * 60L * 1000L
+                );
+
+                boolean salvato = AuthenticationService.salvaTokenRecupero(
+                        user.getId(),
+                        tokenHash,
+                        scadenza
+                );
+
+                if (salvato) {
+                    Utils.sendEmailRecuperoPassword(email, token);
+                }
+            }
+
+        } catch (NoSuchAlgorithmException e) {
+            getServletContext().log(
+                    "Errore durante la richiesta di recupero password.", e
+            );
+        }
+
+        response.sendRedirect(paginaRecupero + "?esito=ok");
+    }
+
+    // REIMPOSTAZIONE PASSWORD
+    protected void ReimpostaPassword(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        request.setCharacterEncoding("UTF-8");
+
+        String token = request.getParameter("token");
+        String password = request.getParameter("password");
+        String confermaPassword = request.getParameter("confermaPassword");
+
+        String paginaReimposta = request.getContextPath()
+                + "/indexRecupero/reimpostaPassword.jsp";
+
+        // Il token generato dal recupero è composto da 64 caratteri esadecimali.
+        if (token == null || !token.matches("^[a-fA-F0-9]{64}$")) {
+            response.sendRedirect(paginaReimposta + "?esito=tokenNonValido");
+            return;
+        }
+
+        // Validazione lato server: non ci affidiamo soltanto al JavaScript.
+        if (password == null
+                || confermaPassword == null
+                || password.length() < 8
+                || password.length() > 128
+                || !password.equals(confermaPassword)) {
+
+            response.sendRedirect(
+                    paginaReimposta + "?esito=passwordNonValida&token=" + token
+            );
+            return;
+        }
+
+        try {
+            // Il database conserva l'hash SHA-256 del token, non il token originale.
+            String tokenHash = HexFormat.of().formatHex(
+                    MessageDigest.getInstance("SHA-256")
+                            .digest(token.getBytes(StandardCharsets.UTF_8))
+            );
+
+            // Il servizio verifica token e scadenza, aggiorna la password con BCrypt
+            // e invalida il token se l'operazione riesce.
+            boolean aggiornata = AuthenticationService.reimpostaPassword(
+                    tokenHash,
+                    password
+            );
+
+            if (aggiornata) {
+                response.sendRedirect(paginaReimposta + "?esito=successo");
+            } else {
+                response.sendRedirect(paginaReimposta + "?esito=tokenNonValido");
+            }
+
+        } catch (NoSuchAlgorithmException e) {
+            getServletContext().log(
+                    "Errore durante il calcolo dell'hash del token di recupero.", e
+            );
+
+            response.sendRedirect(paginaReimposta + "?esito=errore");
+        }
+    }
+
+    protected void Registrazione(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        request.setCharacterEncoding("UTF-8");
+
+        String nome = request.getParameter("nome");
+        String cognome = request.getParameter("cognome");
+        String email = request.getParameter("email");
+        String telefono = request.getParameter("telefono");
+
+        String pagina = request.getContextPath()
+                + "/indexRecupero/registrazione.jsp";
+
+        if (nome == null || cognome == null || email == null
+                || nome.isBlank() || cognome.isBlank()
+                || email.isBlank()
+                || nome.length() > 80 || cognome.length() > 80
+                || email.length() > 254
+                || (telefono != null && telefono.length() > 30)
+                || !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+
+            response.sendRedirect(pagina + "?esito=errore");
+            return;
+        }
+
+        nome = nome.trim();
+        cognome = cognome.trim();
+        email = email.trim().toLowerCase(java.util.Locale.ROOT);
+        telefono = telefono == null ? "" : telefono.trim();
+
+        try {
+            String base = (nome + cognome)
+                    .toLowerCase(java.util.Locale.ROOT)
+                    .replaceAll("[^a-z0-9]", "");
+
+            if (base.isBlank()) {
+                base = "utente";
+            }
+
+            if (base.length() > 20) {
+                base = base.substring(0, 20);
+            }
+
+            SecureRandom random = new SecureRandom();
+            String username = null;
+
+            for (int i = 0; i < 20; i++) {
+                String candidato = base + random.nextInt(100000);
+
+                if (AuthenticationService.usernameDisponibile(candidato)) {
+                    username = candidato;
+                    break;
+                }
+            }
+
+            if (username == null) {
+                response.sendRedirect(pagina + "?esito=errore");
+                return;
+            }
+
+            // Password temporanea casuale di 16 caratteri alfanumerici.
+            String caratteri
+                    = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    + "abcdefghijklmnopqrstuvwxyz"
+                    + "0123456789";
+
+            StringBuilder passwordBuilder = new StringBuilder();
+
+            for (int i = 0; i < 16; i++) {
+                passwordBuilder.append(
+                        caratteri.charAt(random.nextInt(caratteri.length()))
+                );
+            }
+
+            String passwordTemporanea = passwordBuilder.toString();
+
+            User user = new User();
+            user.setNome(nome);
+            user.setCognome(cognome);
+            user.setEmail(email);
+            user.setTelefono(telefono);
+            user.setUsername(username);
+
+            user.setPassword(passwordTemporanea);
+
+            boolean creato = AuthenticationService.registraUtentePubblico(user);
+
+            if (!creato) {
+                response.sendRedirect(pagina + "?esito=duplicato");
+                return;
+            }
+
+            User creatoDalDatabase
+                    = AuthenticationService.getUserByEmail(email);
+
+            boolean emailInviata = Utils.sendEmailRegistrazione(
+                    email,
+                    nome,
+                    username,
+                    passwordTemporanea
+            );
+
+            if (!emailInviata) {
+                if (creatoDalDatabase != null) {
+                    boolean eliminato
+                            = AuthenticationService.eliminaRegistrazioneIncompleta(
+                                    creatoDalDatabase.getId()
+                            );
+
+                    if (!eliminato) {
+                        getServletContext().log(
+                                "Attenzione: impossibile eliminare "
+                                + "una registrazione per cui l'email non "
+                                + "è stata confermata come inviata."
+                        );
+                    }
+                }
+
+                response.sendRedirect(pagina + "?esito=erroreEmail");
+                return;
+            }
+
+            response.sendRedirect(
+                    request.getContextPath()
+                    + "/index.jsp?esito=registrazioneOK"
+            );
+
+        } catch (Exception e) {
+            getServletContext().log(
+                    "Errore durante la registrazione pubblica.", e
+            );
+
+            response.sendRedirect(pagina + "?esito=errore");
+        }
+    }
+
+    // CAMBIO OBBLIGATORIO DELLE CREDENZIALI
+    protected void CambiaCredenziali(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+
+        String pagina = request.getContextPath()
+                + "/indexRecupero/cambioCredenziali.jsp";
+
+        if (session == null || session.getAttribute("userId") == null
+                || !Boolean.TRUE.equals(
+                        session.getAttribute("cambioPasswordObbligatorio"))) {
+
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
+            return;
+        }
+
+        String nuovoUsername = request.getParameter("nuovoUsername");
+        String password = request.getParameter("password");
+        String confermaPassword = request.getParameter("confermaPassword");
+
+        if (nuovoUsername == null) {
+            nuovoUsername = "";
+        }
+
+        nuovoUsername = nuovoUsername.trim();
+
+        User userSessione = (User) session.getAttribute("user");
+
+        // Se il campo username è vuoto, mantiene quello generato.
+        if (nuovoUsername.isEmpty() && userSessione != null) {
+            nuovoUsername = userSessione.getUsername();
+        }
+
+        if (userSessione == null
+                || nuovoUsername.length() < 3
+                || nuovoUsername.length() > 50
+                || !nuovoUsername.matches("^[a-zA-Z0-9._-]+$")
+                || password == null
+                || confermaPassword == null
+                || password.length() < 8
+                || password.length() > 72
+                || !password.equals(confermaPassword)) {
+
+            response.sendRedirect(
+                    pagina + "?esito=passwordNonValida"
+            );
+            return;
+        }
+
+        try {
+            Long userId = Long.valueOf(
+                    session.getAttribute("userId").toString()
+            );
+
+            boolean aggiornate
+                    = AuthenticationService.aggiornaCredenzialiPrimoAccesso(
+                            userId,
+                            nuovoUsername,
+                            password
+                    );
+
+            if (!aggiornate) {
+                response.sendRedirect(pagina + "?esito=usernameNonDisponibile");
+                return;
+            }
+
+            // Aggiorna i dati della sessione dopo il salvataggio.
+            User aggiornato
+                    = AuthenticationService.getUserByUsername(nuovoUsername);
+
+            if (aggiornato == null) {
+                session.invalidate();
+                response.sendRedirect(
+                        request.getContextPath() + "/index.jsp"
+                );
+                return;
+            }
+
+            session.setAttribute("user", aggiornato);
+            session.setAttribute("username", aggiornato.getUsername());
+            session.setAttribute("nome", aggiornato.getNome());
+            session.setAttribute("cambioPasswordObbligatorio", false);
+
+            String ruoloId = String.valueOf(
+                    aggiornato.getRuolo().getId()
+            );
+
+            String destinazione;
+
+            if ("1".equals(ruoloId)) {
+                destinazione = request.getContextPath()
+                        + "/page/admin/dashboard.jsp";
+            } else if ("2".equals(ruoloId)) {
+                destinazione = request.getContextPath()
+                        + "/page/user/dashboard.jsp";
+            } else {
+                session.invalidate();
+                response.sendRedirect(
+                        request.getContextPath() + "/index.jsp"
+                );
+                return;
+            }
+
+            response.sendRedirect(response.encodeRedirectURL(destinazione));
+
+        } catch (Exception e) {
+            getServletContext().log(
+                    "Errore durante il cambio delle credenziali.", e
+            );
+            response.sendRedirect(pagina + "?esito=errore");
         }
     }
 

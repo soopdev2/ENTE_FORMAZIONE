@@ -1126,7 +1126,7 @@
 
 
             const PRESENCE_INTERVAL =
-                    5 * 60 * 1000;
+                    10 * 60 * 1000;
 
 
             let presenceTimer =

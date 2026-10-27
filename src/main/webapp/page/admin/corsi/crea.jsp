@@ -22,6 +22,72 @@
     </head>
 
 
+    <%
+
+        String userIdSession
+                = Utils.checkAttribute(
+                        session,
+                        "userId"
+                );
+
+        if (userIdSession == null) {
+
+            response.sendRedirect(
+                    request.getContextPath()
+                    + "/index.jsp"
+            );
+
+            return;
+        }
+
+        Long userId
+                = Long.valueOf(userIdSession);
+
+        User utente
+                = (User) session.getAttribute("user");
+
+        if (utente == null) {
+
+            response.sendRedirect(
+                    request.getContextPath()
+                    + "/index.jsp"
+            );
+
+            return;
+        }
+
+        String uri
+                = request.getRequestURI();
+
+        String pageName
+                = uri.substring(
+                        uri.lastIndexOf("/") + 1
+                );
+
+        String ruolo
+                = String.valueOf(
+                        utente.getRuolo().getId()
+                );
+
+        if (!Utils.isVisible(
+                ruolo,
+                request.getRequestURI().substring(
+                        request.getContextPath().length()
+                )
+        )) {
+
+            response.sendRedirect(
+                    request.getContextPath()
+                    + "page/error/403.jsp"
+            );
+
+            return;
+        }
+
+
+    %>
+
+
     <body class="d-flex flex-column min-vh-100">
 
 
@@ -189,6 +255,37 @@
                                 </div>
 
 
+                                <!-- DATE -->
+
+                                <div class="mb-3">
+                                    <label for="dataInizio" class="form-label">
+                                        Data inizio validità
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        class="form-control"
+                                        id="dataInizio"
+                                        name="dataInizio"
+                                        required
+                                        >
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="dataFine" class="form-label">
+                                        Data fine validità
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        class="form-control"
+                                        id="dataFine"
+                                        name="dataFine"
+                                        required
+                                        >
+                                </div>
+
+
                                 <!-- AZIONI -->
 
                                 <div class="d-flex justify-content-end gap-2 mt-4">
@@ -229,6 +326,27 @@
 
         <script
             src="../../../Bootstrap2024/assets/js/bootstrap-italia.bundle.min.js">
+        </script>
+
+
+        <script>
+            const dataInizio = document.getElementById("dataInizio");
+            const dataFine = document.getElementById("dataFine");
+
+            function controllaDate() {
+                dataFine.setCustomValidity("");
+
+                if (dataInizio.value && dataFine.value) {
+                    if (dataFine.value < dataInizio.value) {
+                        dataFine.setCustomValidity(
+                                "La data di fine non può precedere quella di inizio."
+                                );
+                    }
+                }
+            }
+
+            dataInizio.addEventListener("change", controllaDate);
+            dataFine.addEventListener("change", controllaDate);
         </script>
 
 

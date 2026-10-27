@@ -4,6 +4,7 @@ import Utility.JpaUtil;
 import entity.Corso;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import java.time.LocalDate;
 import java.util.List;
 
 public class CorsoRepository {
@@ -134,4 +135,31 @@ public class CorsoRepository {
             em.close();
         }
     }
+
+    public List<Corso> findValidi() {
+
+        EntityManager em = JpaUtil.getEntityManager();
+
+        try {
+            LocalDate oggi = LocalDate.now();
+
+            TypedQuery<Corso> query = em.createQuery(
+                    "SELECT DISTINCT c FROM Corso c "
+                    + "LEFT JOIN FETCH c.moduli "
+                    + "WHERE c.attivo = true "
+                    + "AND c.dataInizio <= :oggi "
+                    + "AND c.dataFine >= :oggi "
+                    + "ORDER BY c.id ASC",
+                    Corso.class
+            );
+
+            query.setParameter("oggi", oggi);
+
+            return query.getResultList();
+
+        } finally {
+            em.close();
+        }
+    }
+
 }

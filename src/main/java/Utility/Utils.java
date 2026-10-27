@@ -4,6 +4,13 @@
  */
 package Utility;
 
+import com.mailjet.client.ClientOptions;
+import com.mailjet.client.MailjetClient;
+import com.mailjet.client.MailjetRequest;
+import com.mailjet.client.MailjetResponse;
+import com.mailjet.client.errors.MailjetException;
+import com.mailjet.client.resource.Emailv31;
+import entity.Email;
 import entity.Pagina;
 import entity.User;
 import jakarta.persistence.EntityManager;
@@ -23,6 +30,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  *
@@ -190,7 +200,6 @@ public class Utils {
             return false;
         }
 
-        
         if (page.startsWith("/")) {
 
             page = page.substring(1);
@@ -342,61 +351,137 @@ public class Utils {
         return password.toString();
     }
 
-//    public static void sendEmailJVM(String email, String name, int id, String password) {
-//
-//        if (email == null) {
-//            return;
-//        }
-//        MailjetClient client;
-//        MailjetRequest request1;
-//        @SuppressWarnings("unused")
-//        MailjetResponse response1;
-//
-//        String apiKey = config.getString("apikey");
-//        String secretKey = config.getString("secretKey");
-//
-//        ClientOptions co = ClientOptions.builder()
-//                .apiKey(apiKey)
-//                .apiSecretKey(secretKey)
-//                .build();
-//
-//        client = new MailjetClient(co);
-//
-//        try {
-//            Email email2 = findEmailContent(1L);
-//            String link = config.getString("link");
-//            final String username = config.getString("username");
-//
-//            String contentTemplate = email2.getHtmlContent();
-//            String content = contentTemplate
-//                    .replace("[name]", name)
-//                    .replace("[username]", username)
-//                    .replace("[password]", password);
-//
-//            request1 = new MailjetRequest(Emailv31.resource)
-//                    .property(Emailv31.MESSAGES, new JSONArray()
-//                            .put(new JSONObject()
-//                                    .put(Emailv31.Message.FROM, new JSONObject()
-//                                            .put("Email", username)
-//                                            .put("Name", "SmartNova")
-//                                    )
-//                                    .put(Emailv31.Message.TO, new JSONArray()
-//                                            .put(new JSONObject()
-//                                                    .put("Email", email)
-//                                                    .put("Name", name))
-//                                    )
-//                                    .put(Emailv31.Message.SUBJECT, "Creazione nuova utenza")
-//                                    .put(Emailv31.Message.HTMLPART, content)
-//                            )
-//                    );
-//
-//            response1 = client.post(request1);
-//
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            System.out.println(ex);
-//        }
-//    }
+    public static void sendEmailJVM(String email, String name, int id, String password) {
+
+        if (email == null) {
+            return;
+        }
+        MailjetClient client;
+        MailjetRequest request1;
+        @SuppressWarnings("unused")
+        MailjetResponse response1;
+
+        String apiKey = config.getString("apikey");
+        String secretKey = config.getString("secretKey");
+
+        ClientOptions co = ClientOptions.builder()
+                .apiKey(apiKey)
+                .apiSecretKey(secretKey)
+                .build();
+
+        client = new MailjetClient(co);
+
+        try {
+            Email email2 = findEmailContent(1L);
+            String link = config.getString("link");
+            final String username = config.getString("username");
+
+            String contentTemplate = email2.getHtmlContent();
+            String content = contentTemplate
+                    .replace("[name]", name)
+                    .replace("[username]", username)
+                    .replace("[password]", password);
+
+            request1 = new MailjetRequest(Emailv31.resource)
+                    .property(Emailv31.MESSAGES, new JSONArray()
+                            .put(new JSONObject()
+                                    .put(Emailv31.Message.FROM, new JSONObject()
+                                            .put("Email", username)
+                                            .put("Name", "SmartNova")
+                                    )
+                                    .put(Emailv31.Message.TO, new JSONArray()
+                                            .put(new JSONObject()
+                                                    .put("Email", email)
+                                                    .put("Name", name))
+                                    )
+                                    .put(Emailv31.Message.SUBJECT, "Creazione nuova utenza")
+                                    .put(Emailv31.Message.HTMLPART, content)
+                            )
+                    );
+
+            response1 = client.post(request1);
+
+        } catch (MailjetException | JSONException ex) {
+            ex.printStackTrace();
+            System.out.println(ex);
+        }
+    }
+
+    public static void sendEmailRecuperoPassword(String email, String token) {
+
+        if (email == null || email.isBlank()
+                || token == null || token.isBlank()) {
+            return;
+        }
+
+        try {
+            String apiKey = config.getString("apikey");
+            String secretKey = config.getString("secretKey");
+            String username = config.getString("username");
+
+            ClientOptions co = ClientOptions.builder()
+                    .apiKey(apiKey)
+                    .apiSecretKey(secretKey)
+                    .build();
+
+            MailjetClient client = new MailjetClient(co);
+
+            String baseLink = config.getString("link");
+
+            // URL della pagina che permetterà di impostare la nuova password.
+            String linkRecupero = baseLink
+                    + "reimpostaPassword.jsp?token="
+                    + java.net.URLEncoder.encode(
+                            token,
+                            java.nio.charset.StandardCharsets.UTF_8
+                    );
+
+            String content = "<html>\n"
+                    + "                  <body>\n"
+                    + "                    <h2>Recupero password</h2>\n"
+                    + "                    <p>Hai richiesto di reimpostare la password del tuo account.</p>\n"
+                    + "                    <p>\n"
+                    + "                      <a href=\"%s\">Clicca qui per scegliere una nuova password</a>\n"
+                    + "                    </p>\n"
+                    + "                    <p>Il collegamento scade dopo 30 minuti.</p>\n"
+                    + "                    <p>Se non hai richiesto il recupero, ignora questa email.</p>\n"
+                    + "                  </body>\n"
+                    + "                </html>".formatted(linkRecupero);
+
+            MailjetRequest request1 = new MailjetRequest(Emailv31.resource)
+                    .property(Emailv31.MESSAGES, new JSONArray()
+                            .put(new JSONObject()
+                                    .put(Emailv31.Message.FROM, new JSONObject()
+                                            .put("Email", username)
+                                            .put("Name", "SmartNova")
+                                    )
+                                    .put(Emailv31.Message.TO, new JSONArray()
+                                            .put(new JSONObject()
+                                                    .put("Email", email)
+                                                    .put("Name", "Utente")
+                                            )
+                                    )
+                                    .put(Emailv31.Message.SUBJECT,
+                                            "Recupero password")
+                                    .put(Emailv31.Message.HTMLPART, content)
+                            )
+                    );
+
+            MailjetResponse response1 = client.post(request1);
+
+            if (response1.getStatus() < 200 || response1.getStatus() >= 300) {
+                System.err.println(
+                        "Invio email recupero password fallito. HTTP status: "
+                        + response1.getStatus()
+                );
+            }
+
+        } catch (MailjetException | JSONException ex) {
+            System.err.println("Errore durante l'invio dell'email di recupero password.");
+            ex.printStackTrace();
+        }
+    }
+
     public static double roundToTwoDecimals(double value) {
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(2, RoundingMode.HALF_UP);
@@ -449,6 +534,104 @@ public class Utils {
             return Double.valueOf(val.trim());
         } catch (NumberFormatException e) {
             return 0.0;
+        }
+    }
+
+    public static Email findEmailContent(Long emailId) {
+        EntityManagerFactory emf = null;
+        EntityManager em = null;
+
+        try {
+            emf = Persistence.createEntityManagerFactory("enm_fad_video");
+            em = emf.createEntityManager();
+
+            return em.find(Email.class,
+                    emailId);
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+            if (emf != null) {
+                emf.close();
+            }
+        }
+    }
+
+    public static boolean sendEmailRegistrazione(
+            String email,
+            String nome,
+            String usernameGenerato,
+            String passwordTemporanea) {
+
+        if (email == null || usernameGenerato == null
+                || passwordTemporanea == null) {
+            return false;
+        }
+
+        try {
+            String apiKey = config.getString("apikey");
+            String secretKey = config.getString("secretKey");
+            String mittente = config.getString("username");
+
+            ClientOptions options = ClientOptions.builder()
+                    .apiKey(apiKey)
+                    .apiSecretKey(secretKey)
+                    .build();
+
+            MailjetClient client = new MailjetClient(options);
+
+            String nomeSicuro = nome == null
+                    ? "Utente"
+                    : nome.replace("&", "&amp;")
+                            .replace("<", "&lt;")
+                            .replace(">", "&gt;");
+
+            String usernameSicuro = usernameGenerato
+                    .replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;");
+
+            String passwordSicura = passwordTemporanea
+                    .replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;");
+
+            String contenuto = "<html><body>"
+                    + "<h2>Benvenuto su FAD VIDEO, " + nomeSicuro + "!</h2>"
+                    + "<p>Il tuo account è stato creato.</p>"
+                    + "<p><strong>Nome utente:</strong> " + usernameSicuro + "</p>"
+                    + "<p><strong>Password temporanea:</strong> "
+                    + passwordSicura + "</p>"
+                    + "<p>Al primo accesso dovrai impostare una nuova password. "
+                    + "Potrai anche modificare il nome utente.</p>"
+                    + "<p>Per sicurezza, non condividere queste credenziali.</p>"
+                    + "</body></html>";
+
+            MailjetRequest richiesta = new MailjetRequest(Emailv31.resource)
+                    .property(Emailv31.MESSAGES, new JSONArray()
+                            .put(new JSONObject()
+                                    .put(Emailv31.Message.FROM, new JSONObject()
+                                            .put("Email", mittente)
+                                            .put("Name", "FAD VIDEO"))
+                                    .put(Emailv31.Message.TO, new JSONArray()
+                                            .put(new JSONObject()
+                                                    .put("Email", email)
+                                                    .put("Name", nomeSicuro)))
+                                    .put(Emailv31.Message.SUBJECT,
+                                            "Le tue credenziali FAD VIDEO")
+                                    .put(Emailv31.Message.HTMLPART, contenuto)));
+
+            MailjetResponse risposta = client.post(richiesta);
+
+            return risposta.getStatus() >= 200
+                    && risposta.getStatus() < 300;
+
+        } catch (MailjetException | JSONException e) {
+            System.err.println(
+                    "Errore durante l'invio dell'email di registrazione."
+            );
+            e.printStackTrace();
+            return false;
         }
     }
 

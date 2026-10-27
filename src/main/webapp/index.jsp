@@ -304,12 +304,22 @@
                                         <div class="d-flex justify-content-end mb-3">
 
 
-                                            <a href="javascript:;"
+                                            <a href="recuperoPassword.jsp"
                                                class="it-link text-uppercase" style="font-size: 13px">
                                                 Password dimenticata?
                                             </a>
+                                        </div>
+
+                                        <div class="d-flex justify-content-end mb-3">
+
+                                            <a href="registrazione.jsp"
+                                               class="it-link text-uppercase"
+                                               style="font-size: 13px">
+                                                Crea un account
+                                            </a>
 
                                         </div>
+
 
                                         <button type="submit"
                                                 class="btn btn-primary w-100 text-uppercase">
@@ -399,45 +409,45 @@
 
         <script>
 
-                                              function ctrlForm() {
+            function ctrlForm() {
 
-                                                  var err = false;
+                var err = false;
 
-                                                  var user = $("#user");
-                                                  var pass = $("#password");
-
-
-                                                  if (checkValue(user, false)) {
-                                                      err = true;
-                                                  }
+                var user = $("#user");
+                var pass = $("#password");
 
 
-                                                  if (checkValue(pass, false)) {
-                                                      err = true;
-                                                  }
+                if (checkValue(user, false)) {
+                    err = true;
+                }
 
 
-                                                  if (err) {
-
-                                                      biAlert(
-                                                              'danger',
-                                                              'Dati di accesso incompleti',
-                                                              'Inserisci username e password.'
-                                                              );
-
-                                                      return false;
-                                                  }
+                if (checkValue(pass, false)) {
+                    err = true;
+                }
 
 
-                                                  biAlert(
-                                                          'info',
-                                                          'Accesso in corso',
-                                                          'Attendere...'
-                                                          );
+                if (err) {
+
+                    biAlert(
+                            'danger',
+                            'Dati di accesso incompleti',
+                            'Inserisci username e password.'
+                            );
+
+                    return false;
+                }
 
 
-                                                  return true;
-                                              }
+                biAlert(
+                        'info',
+                        'Accesso in corso',
+                        'Attendere...'
+                        );
+
+
+                return true;
+            }
 
         </script>
 
@@ -454,35 +464,75 @@
              ========================================================= -->
 
         <script type="text/javascript">
-
             <%
                 String esito = request.getParameter("esito");
 
                 if (esito == null) {
                     esito = "";
-                } else if (esito.equals("KO")) {
+                }
+
+                switch (esito) {
+                    case "KO":
             %>
-
-                                              biAlert(
-                                                      'danger',
-                                                      'Credenziali errate',
-                                                      'Username o password non validi. Riprovare.'
-                                                      );
-
+            biAlert(
+                    'danger',
+                    'Credenziali errate',
+                    'Username o password non validi. Riprovare.'
+                    );
             <%
-            } else if (esito.equals("banned")) {
+                    break;
+
+                case "banned":
             %>
-
-                                              biAlert(
-                                                      'danger',
-                                                      'Utenza bloccata',
-                                                      'L\'account è stato bloccato. Contattare l\'amministratore.'
-                                                      );
-
+            biAlert(
+                    'danger',
+                    'Utenza bloccata',
+                    'L\'account è stato bloccato. Contattare l\'amministratore.'
+                    );
             <%
+                    break;
+
+                case "registrazioneOK":
+            %>
+            biAlert(
+                    'success',
+                    'Registrazione completata',
+                    'Controlla la tua email per ricevere le credenziali del primo accesso.'
+                    );
+            <%
+                    break;
+
+                case "duplicato":
+            %>
+            biAlert(
+                    'warning',
+                    'Dati già presenti',
+                    'Esiste già un account con questa email o questo username.'
+                    );
+            <%
+                    break;
+
+                case "erroreEmail":
+            %>
+            biAlert(
+                    'danger',
+                    'Invio email non riuscito',
+                    'Non è stato possibile inviare le credenziali. Riprova più tardi.'
+                    );
+            <%
+                    break;
+
+                case "errore":
+            %>
+            biAlert(
+                    'danger',
+                    'Errore',
+                    'Si è verificato un problema. Riprova più tardi.'
+                    );
+            <%
+                        break;
                 }
             %>
-
         </script>
 
 
