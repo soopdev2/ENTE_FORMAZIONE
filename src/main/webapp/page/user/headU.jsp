@@ -53,19 +53,19 @@
                 </li>
 
                 <!--li>
-                    <a class="dropdown-item d-flex align-items-center text-primary bg-white" href="href="#">
+                    <a class="dropdown-item d-flex align-items-center text-primary bg-white" href="">
                         <svg class="icon icon-sm me-2 icon-primary" aria-hidden="true"><use href="../../../Bootstrap2024/assets/svg/sprites.svg#it-user"></use></svg>
                         Dati personali
                     </a>
                 </li-->
-                
-                <li>
-                    <a class="dropdown-item d-flex align-items-center border-bottom text-primary bg-white href=" href="../../indexRecupero/cambioCredenziali.jsp">
+
+                <!--li>
+                    <a class="dropdown-item d-flex align-items-center border-bottom text-primary bg-white href=" href="../../indexRecupero/cambioPassword.jsp">
                         <svg class="icon icon-sm me-2 icon-primary" aria-hidden="true"><use href="../../../Bootstrap2024/assets/svg/sprites.svg#it-key"></use></svg>
                         Cambia Password
                     </a>
-                </li>
-                
+                </li-->
+
 
                 <li>
                     <a class="dropdown-item d-flex align-items-center text-primary bg-white" href="<%=request.getContextPath()%>/LoginServlet?isLogin">
