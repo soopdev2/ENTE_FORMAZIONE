@@ -356,6 +356,7 @@ public class LoginServlet extends HttpServlet {
         String cognome = request.getParameter("cognome");
         String email = request.getParameter("email");
         String telefono = request.getParameter("telefono");
+        String codiceFiscale = request.getParameter("cf");
 
         String pagina = request.getContextPath()
                 + "/indexRecupero/registrazione.jsp";
@@ -427,6 +428,7 @@ public class LoginServlet extends HttpServlet {
             user.setNome(nome);
             user.setCognome(cognome);
             user.setEmail(email);
+            user.setCf(codiceFiscale);
             user.setTelefono(telefono);
             user.setUsername(username);
 

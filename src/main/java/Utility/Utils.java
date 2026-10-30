@@ -387,7 +387,7 @@ public class Utils {
                             .put(new JSONObject()
                                     .put(Emailv31.Message.FROM, new JSONObject()
                                             .put("Email", username)
-                                            .put("Name", "SmartNova")
+                                            .put("Name", "ENTE - FORMAZIONE")
                                     )
                                     .put(Emailv31.Message.TO, new JSONArray()
                                             .put(new JSONObject()
@@ -448,9 +448,9 @@ public class Utils {
                     + "text-decoration:none;border-radius:6px;\">"
                     + "Reimposta password</a>"
                     + "</p>"
-                    + "<p>Se il pulsante non funziona, copia questo indirizzo nel browser:</p>"
-                    + "<p><a href=\"" + linkRecupero + "\">"
-                    + linkRecupero + "</a></p>"
+//                    + "<p>Se il pulsante non funziona, copia questo indirizzo nel browser:</p>"
+//                    + "<p><a href=\"" + linkRecupero + "\">"
+//                    + linkRecupero + "</a></p>"
                     + "<p>Il collegamento scade dopo 30 minuti.</p>"
                     + "<p>Se non hai richiesto il recupero, ignora questa email.</p>"
                     + "</body></html>";

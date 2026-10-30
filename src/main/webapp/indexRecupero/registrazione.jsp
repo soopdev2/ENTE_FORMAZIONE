@@ -1,3 +1,4 @@
+
 <%-- 
     Document   : registrazione
     Created on : 23 ott 2026, 09:26:18
@@ -134,6 +135,24 @@
                                        name="cognome"
                                        maxlength="80"
                                        autocomplete="family-name"
+                                       required>
+                            </div>
+
+                            <!-- CODICE FISCALE -->
+                            <div class="mb-3">
+                                <label for="cf" class="form-label">
+                                    Codice fiscale
+                                </label>
+                                <input type="text"
+                                       class="form-control text-uppercase"
+                                       id="cf"
+                                       name="cf"
+                                       minlength="16"
+                                       maxlength="16"
+                                       pattern="[A-Za-z0-9]{16}"
+                                       title="Inserisci un codice fiscale di 16 caratteri alfanumerici."
+                                       autocomplete="off"
+                                       oninput="this.value = this.value.toUpperCase()"
                                        required>
                             </div>
 
