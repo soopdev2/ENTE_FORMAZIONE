@@ -1,13 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
+ ///*
+// * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+// * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
+// */
 package servlet;
-
-/**
- *
- * @author Aldo
- */
+//
+///**
+// *
+// * @author Aldo
+// */
 import Utility.JpaUtil;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -390,7 +390,7 @@ public class Spid extends HttpServlet {
                         "Sample RP")
                 .setRedirectUris(
                         ArrayUtil.asSet(
-                                "http://localhost:8080/ENTE_FORMAZIONE/spid?callback=true"))
+                                "http://localhost:8091/ENTE_FORMAZIONE/Spid?callback=true"))
                 .setJWK(
                         "RELYING_PARTY_JWK_STRING")
                 .setTrustMarks(
@@ -475,3 +475,331 @@ public class Spid extends HttpServlet {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//----------------------------------------------------------------
+
+// TEST DI SVILUPPO
+
+//----------------------------------------------------------------
+
+//
+//
+//
+//
+//
+//package servlet;
+//
+//import Utility.JpaUtil;
+//import entity.User;
+//
+//import jakarta.persistence.EntityManager;
+//import jakarta.persistence.TypedQuery;
+//import jakarta.servlet.ServletException;
+//import jakarta.servlet.http.HttpServlet;
+//import jakarta.servlet.http.HttpServletRequest;
+//import jakarta.servlet.http.HttpServletResponse;
+//import jakarta.servlet.http.HttpSession;
+//
+//import java.io.IOException;
+//import java.util.Set;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
+//
+//public class Spid extends HttpServlet {
+//
+//    private static final Logger LOGGER
+//            = Logger.getLogger(Spid.class.getName());
+//
+//    /*
+//     * MODALITÀ DI SVILUPPO
+//     *
+//     * Deve rimanere true esclusivamente nell'ambiente locale.
+//     * Prima della pubblicazione deve essere disabilitata.
+//     */
+//    private static final boolean DEV_MODE = true;
+//
+//    /*
+//     * Inserisci il codice fiscale di un utente di test
+//     * GIÀ ESISTENTE nel database FAD VIDEO.
+//     *
+//     * Non utilizzare questo valore segnaposto.
+//     */
+//    private static final String DEV_TEST_CF
+//            = "MNCLDA97P28C352V";
+//
+//    /*
+//     * Identity Provider consentiti durante lo sviluppo.
+//     */
+//    private static final Set<String> ALLOWED_IDPS = Set.of(
+//            "https://loginspid.aruba.it",
+//            "https://identity.infocert.it",
+//            "https://spid.intesa.it",
+//            "https://id.lepida.it/idp/shibboleth",
+//            "https://idp.namirialtsp.com/idp",
+//            "https://posteid.poste.it",
+//            "https://identity.sieltecloud.it",
+//            "https://spid.register.it",
+//            "https://login.id.tim.it/affwebservices/public/saml2sso",
+//            "https://spid.teamsystem.com/idp"
+//    );
+//
+//    /*
+//     * Accetta esclusivamente richieste provenienti
+//     * dalla macchina locale.
+//     */
+//    private boolean isLocalRequest(HttpServletRequest request) {
+//
+//        String remoteAddress = request.getRemoteAddr();
+//
+//        return "127.0.0.1".equals(remoteAddress)
+//                || "::1".equals(remoteAddress)
+//                || "0:0:0:0:0:0:0:1".equals(remoteAddress)
+//                || "::ffff:127.0.0.1".equals(remoteAddress);
+//    }
+//
+//    /*
+//     * Avvio della simulazione SPID.
+//     */
+//    private void processDevelopmentLogin(
+//            HttpServletRequest request,
+//            HttpServletResponse response)
+//            throws IOException {
+//
+//        if (!DEV_MODE) {
+//            response.sendError(
+//                    HttpServletResponse.SC_FORBIDDEN,
+//                    "Modalità SPID di sviluppo disabilitata."
+//            );
+//            return;
+//        }
+//
+//        if (!isLocalRequest(request)) {
+//            LOGGER.warning(
+//                    "Tentativo di accesso SPID DEV non locale."
+//            );
+//
+//            response.sendError(
+//                    HttpServletResponse.SC_FORBIDDEN,
+//                    "Accesso consentito soltanto da localhost."
+//            );
+//            return;
+//        }
+//
+//        /*
+//         * Recupero parametri inviati dal JavaScript.
+//         */
+//        String provider = request.getParameter("provider");
+//        String entityId = request.getParameter("entity_id");
+//
+//        if (provider == null || provider.isBlank()) {
+//            response.sendError(
+//                    HttpServletResponse.SC_BAD_REQUEST,
+//                    "Provider SPID mancante."
+//            );
+//            return;
+//        }
+//
+//        if (entityId == null || !ALLOWED_IDPS.contains(entityId)) {
+//            response.sendError(
+//                    HttpServletResponse.SC_BAD_REQUEST,
+//                    "Identity Provider non riconosciuto."
+//            );
+//            return;
+//        }
+//
+//        /*
+//         * Verifica configurazione utente di test.
+//         */
+//        if (DEV_TEST_CF == null
+//                || DEV_TEST_CF.equals("INSERISCI_CF_UTENTE_TEST")
+//                || !DEV_TEST_CF.matches("^[A-Z0-9]{16}$")) {
+//
+//            LOGGER.severe(
+//                    "Codice fiscale dell'utente SPID DEV non configurato."
+//            );
+//
+//            response.sendError(
+//                    HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+//                    "Configurare il codice fiscale dell'utente di test "
+//                    + "in Spid.java."
+//            );
+//            return;
+//        }
+//
+//        User user = findUserByFiscalCode(DEV_TEST_CF);
+//
+//        if (user == null) {
+//
+//            LOGGER.warning(
+//                    "Utente SPID DEV non trovato nel database."
+//            );
+//
+//            response.sendError(
+//                    HttpServletResponse.SC_UNAUTHORIZED,
+//                    "Utente di test non presente nel database FAD VIDEO."
+//            );
+//
+//            return;
+//        }
+//
+//        /*
+//         * Creazione sessione applicativa.
+//         */
+//        HttpSession oldSession = request.getSession(false);
+//
+//        if (oldSession != null) {
+//            oldSession.invalidate();
+//        }
+//
+//        HttpSession session = request.getSession(true);
+//
+//        session.setAttribute("userSPID", user);
+//
+//        session.setAttribute("spidDevelopmentMode", true);
+//
+//        session.setAttribute("spidProvider", entityId);
+//
+//        LOGGER.info(
+//                "Accesso SPID DEV effettuato. Provider: "
+//                + entityId
+//        );
+//
+//        /*
+//         * Accesso alla dashboard.
+//         */
+//        response.sendRedirect(
+//                request.getContextPath() + "/dashboard.jsp"
+//        );
+//    }
+//
+//    /*
+//     * Ricerca dell'utente già registrato tramite codice fiscale.
+//     */
+//    private User findUserByFiscalCode(String codiceFiscale) {
+//
+//        EntityManager em = null;
+//
+//        try {
+//
+//            em = JpaUtil.getEntityManager();
+//
+//            TypedQuery<User> query = em.createQuery(
+//                    "SELECT u FROM User u WHERE u.cf = :cf",
+//                    User.class
+//            );
+//
+//            query.setParameter("cf", codiceFiscale);
+//
+//            query.setMaxResults(1);
+//
+//            return query.getResultStream()
+//                    .findFirst()
+//                    .orElse(null);
+//
+//        } catch (RuntimeException ex) {
+//
+//            LOGGER.log(
+//                    Level.SEVERE,
+//                    "Errore durante la ricerca dell'utente SPID DEV.",
+//                    ex
+//            );
+//
+//            throw ex;
+//
+//        } finally {
+//
+//            if (em != null && em.isOpen()) {
+//                em.close();
+//            }
+//        }
+//    }
+//
+//    /*
+//     * GET:
+//     * Non viene effettuata autenticazione tramite GET
+//     * in modalità di sviluppo.
+//     */
+//    @Override
+//    protected void doGet(
+//            HttpServletRequest request,
+//            HttpServletResponse response)
+//            throws ServletException, IOException {
+//
+//        response.sendError(
+//                HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+//                "Utilizzare POST per avviare il login SPID DEV."
+//        );
+//    }
+//
+//    /*
+//     * POST:
+//     * Avvia la simulazione di autenticazione.
+//     */
+//    @Override
+//    protected void doPost(
+//            HttpServletRequest request,
+//            HttpServletResponse response)
+//            throws ServletException, IOException {
+//
+//        try {
+//
+//            processDevelopmentLogin(request, response);
+//
+//        } catch (RuntimeException ex) {
+//
+//            LOGGER.log(
+//                    Level.SEVERE,
+//                    "Errore durante il login SPID DEV.",
+//                    ex
+//            );
+//
+//            if (!response.isCommitted()) {
+//                response.sendError(
+//                        HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+//                        "Errore durante l'accesso SPID di sviluppo."
+//                );
+//            }
+//        }
+//    }
+//}

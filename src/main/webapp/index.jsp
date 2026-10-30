@@ -95,20 +95,20 @@
 
 
 
+
         <style>
 
             /* =========================================================
                ESTETICA LOGIN SPID + CIE
                ========================================================= */
 
-            /* I due pulsanti occupano ciascuno la propria cella */
             .spid-login-container > .ita {
                 position: relative;
                 width: 100%;
                 min-width: 0;
             }
 
-            /* Pulsante SPID / CIE */
+            /* Pulsanti SPID / CIE */
             .spid-login-container .ita-button {
                 box-sizing: border-box;
                 width: 100%;
@@ -122,43 +122,134 @@
 
             .spid-login-container .ita-button:hover {
                 transform: translateY(-2px);
-
-                box-shadow:
-                    0 5px 14px rgba(0, 0, 0, 0.12);
+                box-shadow: 0 5px 14px rgba(0, 0, 0, 0.12);
             }
 
-            /* Tendina IDP: ancorata sotto il pulsante, non sfonda la pagina */
+            /* Tendina Identity Provider */
             .spid-login-container .ita-menu {
                 box-sizing: border-box;
+                position: absolute !important;
 
                 top: 100%;
                 left: 0;
 
                 width: 100%;
-
                 max-width: 100%;
 
-                max-height: 60vh;
-
+                max-height: 350px !important;
                 overflow-y: auto;
+
+                list-style: none !important;
+                padding: 8px !important;
+                margin: 0 !important;
+
+                background: #ffffff;
+                border: 1px solid #dedede;
+                border-radius: 0 0 8px 8px;
+
+                z-index: 1000;
             }
 
+            /* Singola voce IDP */
+            .spid-login-container .ita-menu > li {
+                display: block;
+                width: 100%;
 
+                list-style: none !important;
+                margin: 0 !important;
+                padding: 4px 0 !important;
+
+                border-bottom: 1px solid #eeeeee;
+            }
+
+            .spid-login-container .ita-menu > li:last-child {
+                border-bottom: none;
+            }
+
+            /* Pulsante del provider */
+            .spid-login-container .ita-menu .idp-button-idp-logo {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                width: 100%;
+                min-height: 58px;
+
+                padding: 8px 12px;
+
+                background: #ffffff;
+                border: 1px solid transparent;
+                border-radius: 5px;
+
+                cursor: pointer;
+                box-shadow: none;
+            }
+
+            .spid-login-container .ita-menu .idp-button-idp-logo:hover {
+                background: #f3f6fc;
+                border-color: #d5dce8;
+            }
+
+            /* Loghi Identity Provider */
+            .spid-login-container .ita-menu .spid-idp-button-logo {
+                display: block;
+
+                width: auto;
+                max-width: 180px;
+
+                height: 42px;
+                max-height: 42px;
+
+                object-fit: contain;
+
+                border: none;
+                box-shadow: none;
+            }
+
+            /* Testo accessibile */
+            .spid-login-container .ita-menu .spid-sr-only {
+                position: absolute;
+
+                width: 1px;
+                height: 1px;
+
+                padding: 0;
+                margin: -1px;
+
+                overflow: hidden;
+                clip: rect(0, 0, 0, 0);
+
+                white-space: nowrap;
+                border: 0;
+            }
+
+            /* Scrollbar */
+            .spid-login-container .ita-menu::-webkit-scrollbar {
+                width: 7px;
+            }
+
+            .spid-login-container .ita-menu::-webkit-scrollbar-thumb {
+                background: #b5b5b5;
+                border-radius: 8px;
+            }
+
+            .spid-login-container .ita-menu::-webkit-scrollbar-track {
+                background: #f5f5f5;
+            }
+
+            /* =========================================================
+               DESKTOP
+               ========================================================= */
 
             @media (min-width: 576px) {
 
                 .spid-login-container {
-
                     display: grid;
-
                     grid-template-columns: 1fr 1fr;
-
                     gap: 15px;
-
                     align-items: center;
                 }
             }
-
 
             /* =========================================================
                MOBILE
@@ -175,11 +266,13 @@
                 }
             }
 
+            /* ALERT */
             #bi-alerts .bi-alert-content {
                 overflow-wrap: anywhere;
             }
 
         </style>
+
 
 
 
@@ -341,24 +434,18 @@
                                         <!-- ================= SPID ================= -->
 
                                         <div class="ita ita-dropdown ita-extended">
-
-                                            <button type="button"
-                                                    class="ita-button">
-
-                                                <img src="Bootstrap2024/assets/svg/spid.svg"
-                                                     alt="SPID" />
-
+                                            <button type="button" class="ita-button" aria-expanded="false">
+                                                <img src="Bootstrap2024/assets/svg/spid.svg" alt="SPID" />
                                                 <span class="ita-content">Entra con SPID</span>
-
                                             </button>
 
-                                            <div class="ita-menu"
-                                                 role="menu"
-                                                 data-spid-remote>
-                                            </div>
-
+                                            <ul
+                                                class="ita-menu"
+                                                id="spid-idp-list"
+                                                role="menu"
+                                                data-endpoint="${pageContext.request.contextPath}/Spid">
+                                            </ul>
                                         </div>
-
 
                                         <!-- ================= CIE ================= -->
 
@@ -457,6 +544,8 @@
 
         <script src="Bootstrap2024/assets/js/bootstrap-italia.bundle.min.js"
         type="text/javascript"></script>
+
+        <script src="assets/spid/js/spid-idps.js"></script>
 
 
         <!-- =========================================================
