@@ -223,7 +223,7 @@ public class Spid extends HttpServlet {
             // ====================================================
             resp.sendRedirect(
                     req.getContextPath()
-                    + "/home.jsp");
+                    + "/dashboard.jsp");
 
         } catch (OIDCException ex) {
 
@@ -390,7 +390,7 @@ public class Spid extends HttpServlet {
                         "Sample RP")
                 .setRedirectUris(
                         ArrayUtil.asSet(
-                                "http://localhost:8080/nomeApp/spid?callback=true"))
+                                "http://localhost:8080/ENTE_FORMAZIONE/spid?callback=true"))
                 .setJWK(
                         "RELYING_PARTY_JWK_STRING")
                 .setTrustMarks(

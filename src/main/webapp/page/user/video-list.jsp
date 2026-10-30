@@ -176,9 +176,9 @@
             || oggi.isBefore(corso.getDataInizio())
             || oggi.isAfter(corso.getDataFine())) {
 
-        response.sendError(
-                HttpServletResponse.SC_FORBIDDEN,
-                "Il corso non è attualmente disponibile."
+        response.sendRedirect(
+                request.getContextPath()
+                + "/page/error/dateNo.jsp"
         );
 
         return;
@@ -215,11 +215,19 @@
         return;
     }
 
+    // SINCRONIZZAZIONE AUTOMATICA DELLE ASSEGNAZIONI
+    userVideoService.assegnaModulo(
+            userId,
+            moduloId
+    );
+
+// RECUPERO VIDEO DEL MODULO
     List<Video> video
             = videoService.getVideoAttiviModulo(
                     moduloId
             );
 
+// RECUPERO PROGRESSI UTENTE
     List<UserVideo> userVideos
             = userVideoService.getUserVideos(
                     userId
