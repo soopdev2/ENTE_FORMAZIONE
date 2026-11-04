@@ -40,6 +40,10 @@
         <servlet-name>PrimoAccessoFilter</servlet-name>
         <servlet-class>servlet.PrimoAccessoFilter</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AuthServlet</servlet-name>
+        <servlet-class>servlet.AuthServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ModuloServlet</servlet-name>
         <url-pattern>/ModuloServlet</url-pattern>
@@ -79,6 +83,10 @@
     <servlet-mapping>
         <servlet-name>PrimoAccessoFilter</servlet-name>
         <url-pattern>/PrimoAccessoFilter</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AuthServlet</servlet-name>
+        <url-pattern>/AuthServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
